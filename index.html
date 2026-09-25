@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WoW Forever, spela med oss</title>
+  <meta name="description" content="Vi spelar WoW Forever från 4 november. Skriv upp din karaktär och kom med i gruppen.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#14110d">
+  <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Spelargrupp av Emil &amp; Cattis</p>
+      <h1>WoW <span>Forever</span></h1>
+      <p class="lead">Vi startar 4 november och vill spela med folk vi känner. Nybörjare, rostiga veteraner och glesa speltider är välkomna.</p>
+      <div class="chips">
+        <span class="chip" id="countdown"></span>
+        <span class="chip">Servertyp: Normal</span>
+        <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener">Gå med på Discord</a>
+      </div>
+      <nav class="jump">
+        <a href="#anmalan" class="btn primary">Skriv upp dig</a>
+        <a href="#roster" class="btn">Vilka är med</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="summary" class="panel" aria-live="polite"></section>
+
+    <section id="anmalan" class="panel">
+      <h2 id="formTitle">Skriv upp dig</h2>
+      <p class="muted" id="formIntro">Ingen inloggning. Fyll i dina karaktärer så syns du i listan. Efteråt får du en privat länk för att ändra dem.</p>
+
+      <div id="editBanner" class="notice" hidden></div>
+
+      <form id="regForm" novalidate>
+        <div class="field-row">
+          <label class="field">
+            <span>Ditt namn eller smeknamn</span>
+            <input id="displayName" maxlength="40" autocomplete="nickname" required>
+          </label>
+          <label class="field">
+            <span>Hur når vi dig? <em>(valfritt, syns bara för oss)</em></span>
+            <input id="contact" maxlength="120" placeholder="Discord, telefon eller mail">
+          </label>
+        </div>
+
+        <input class="hp" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div id="charEditors"></div>
+
+        <button type="button" class="btn" id="addChar">+ Lägg till en till karaktär</button>
+
+        <p class="error" id="formError" role="alert" hidden></p>
+
+        <div class="actions">
+          <button type="submit" class="btn primary" id="submitBtn">Skicka in</button>
+          <button type="button" class="btn danger" id="deleteBtn" hidden>Ta bort min registrering</button>
+        </div>
+      </form>
+
+      <div id="success" class="notice success" hidden></div>
+    </section>
+
+    <section id="roster" class="panel">
+      <h2>Vilka är med</h2>
+      <div class="filters">
+        <label>Fraktion
+          <select id="fFaction"><option value="">Alla</option><option>Alliance</option><option>Horde</option></select>
+        </label>
+        <label>Klass <select id="fClass"><option value="">Alla</option></select></label>
+        <label>Yrke <select id="fProf"><option value="">Alla</option></select></label>
+        <label>Servertyp <select id="fRuleset"><option value="">Alla</option></select></label>
+      </div>
+      <div id="cards" class="cards"></div>
+      <p class="muted" id="rosterEmpty" hidden>Ingen här än. Bli först!</p>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Inte affilierad med Blizzard Entertainment. Bilder tillhör deras respektive ägare.</p>
+  </footer>
+
+  <script src="data.js?v=2"></script>
+  <script src="app.js?v=8"></script>
+</body>
+</html>
