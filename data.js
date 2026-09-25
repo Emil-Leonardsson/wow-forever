@@ -61,11 +61,12 @@ window.WF_DATA = (() => {
       Roleplay: { sheet: 'rulesets', x: 564, y: 100, w: 56, h: 56 },
       Hardcore: { sheet: 'rulesets', x: 800, y: 100, w: 56, h: 56 },
     },
+    // Exakta ikongränser (x-start, bredd) uppmätta i race-classes.webp. Ikonerna är kvadratiska.
     class: Object.fromEntries(
       Object.entries({
-        Druid: 167, Hunter: 242, Mage: 312, Paladin: 395, Priest: 472,
-        Rogue: 546, Shaman: 629, Warlock: 721, Warrior: 809,
-      }).map(([name, cx]) => [name, { sheet: 'classes', x: cx - 21, y: 72, w: 42, h: 42 }])
+        Druid: [146, 41], Hunter: [222, 40], Mage: [297, 42], Paladin: [376, 41], Priest: [453, 40],
+        Rogue: [525, 41], Shaman: [609, 42], Warlock: [700, 43], Warrior: [788, 41],
+      }).map(([name, [x, w]]) => [name, { sheet: "classes", x, y: 72, w, h: w }])
     ),
     // Nyckel: "Faction:Race". Ordningen i bilden är uppifrån och ned.
     race: (() => {
