@@ -156,8 +156,15 @@ legend { color: var(--gold); font-weight: 700; padding: 0 8px; }
 .fsum.alliance h3 { color: #8fb1f2; }
 .fsum.horde { background: linear-gradient(#3d1613, #2a0f0d); border: 1px solid #7d2a22; }
 .fsum.horde h3 { color: #ee8a7d; }
-.fsum .classcount { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+.fsum .classcount { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
 .fsum .cc { background: rgba(0,0,0,.25); }
 @media (max-width: 700px) {
   .factions { grid-template-columns: 1fr; }
 }
+
+.profcount { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 10px 0; }
+.pc { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; background: rgba(0,0,0,.25); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.pc b { color: var(--gold); font-size: 1.05rem; line-height: 1; }
+.pc span { font-size: .75rem; color: #d4c9b1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc.zero { opacity: .45; }
+.profcount.sec .pc { background: transparent; }

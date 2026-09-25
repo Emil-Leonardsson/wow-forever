@@ -369,18 +369,21 @@
     const byClass = Object.fromEntries(D.classes.map((c) => [c, 0]));
     const byRole = { Tank: 0, Healer: 0, DPS: 0 };
     const byProf = Object.fromEntries(D.professions.map((p) => [p, 0]));
+    const bySec = Object.fromEntries(D.secondaryProfessions.map((p) => [p, 0]));
     rows.forEach((c) => {
       byClass[c.class] = (byClass[c.class] || 0) + 1;
       (c.roles || []).forEach((r) => { byRole[r] += 1; });
       [c.prof1, c.prof2].filter(Boolean).forEach((p) => { byProf[p] = (byProf[p] || 0) + 1; });
+      (c.secondary || []).forEach((p) => { bySec[p] = (bySec[p] || 0) + 1; });
     });
-    const missingProfs = D.professions.filter((p) => !byProf[p]);
+    const profTile = (name, n) => `<div class="pc${n ? "" : " zero"}"><b>${n}</b><span>${name}</span></div>`;
     return `<div class="fsum ${faction.toLowerCase()}">
       <h3>${faction}</h3>
       <p class="muted">${players} ${players === 1 ? "spelare" : "spelare"} och ${rows.length} ${rows.length === 1 ? "karaktär" : "karaktärer"}.</p>
       <div class="classcount">${D.classes.map((c) => `<div class="cc${byClass[c] ? "" : " zero"}">${sprite("class", c, 32)}<b>${byClass[c]}</b><span>${c}</span></div>`).join("")}</div>
       <p class="roles">${Object.entries(byRole).map(([r, n]) => `<span class="tag${n ? "" : " warn"}">${r}: ${n}</span>`).join("")}</p>
-      ${missingProfs.length ? `<p class="muted small">Yrken ingen har än: ${missingProfs.join(", ")}.</p>` : `<p class="muted small">Alla huvudyrken är täckta.</p>`}
+      <div class="profcount">${D.professions.map((p) => profTile(p, byProf[p])).join("")}</div>
+      <div class="profcount sec">${D.secondaryProfessions.map((p) => profTile(p, bySec[p])).join("")}</div>
     </div>`;
   }
 
