@@ -363,27 +363,30 @@
     }).join('');
   }
 
-  function renderSummary() {
-    const box = $('#summary');
-    if (!roster.length) {
-      box.innerHTML = `<h2>Gruppen just nu</h2><p class="muted">Ingen har skrivit upp sig än. Här visas vilka klasser och yrken vi täcker.</p>`;
-      return;
-    }
-    const players = new Set(roster.map((c) => c.player_name)).size;
+  function factionSummary(faction) {
+    const rows = roster.filter((c) => c.faction === faction);
+    const players = new Set(rows.map((c) => c.player_name)).size;
     const byClass = Object.fromEntries(D.classes.map((c) => [c, 0]));
     const byRole = { Tank: 0, Healer: 0, DPS: 0 };
     const byProf = Object.fromEntries(D.professions.map((p) => [p, 0]));
-    roster.forEach((c) => {
+    rows.forEach((c) => {
       byClass[c.class] = (byClass[c.class] || 0) + 1;
       (c.roles || []).forEach((r) => { byRole[r] += 1; });
       [c.prof1, c.prof2].filter(Boolean).forEach((p) => { byProf[p] = (byProf[p] || 0) + 1; });
     });
     const missingProfs = D.professions.filter((p) => !byProf[p]);
-    box.innerHTML = `<h2>Gruppen just nu</h2>
-      <p class="muted">${players} ${players === 1 ? 'spelare' : 'spelare'} och ${roster.length} ${roster.length === 1 ? 'karaktär' : 'karaktärer'}.</p>
-      <div class="classcount">${D.classes.map((c) => `<div class="cc${byClass[c] ? '' : ' zero'}">${sprite('class', c, 32)}<b>${byClass[c]}</b><span>${c}</span></div>`).join('')}</div>
-      <p class="roles">${Object.entries(byRole).map(([r, n]) => `<span class="tag${n ? '' : ' warn'}">${r}: ${n}</span>`).join('')}</p>
-      ${missingProfs.length ? `<p class="muted small">Yrken ingen har än: ${missingProfs.join(', ')}.</p>` : `<p class="muted small">Alla huvudyrken är täckta.</p>`}`;
+    return `<div class="fsum ${faction.toLowerCase()}">
+      <h3>${faction}</h3>
+      <p class="muted">${players} ${players === 1 ? "spelare" : "spelare"} och ${rows.length} ${rows.length === 1 ? "karaktär" : "karaktärer"}.</p>
+      <div class="classcount">${D.classes.map((c) => `<div class="cc${byClass[c] ? "" : " zero"}">${sprite("class", c, 32)}<b>${byClass[c]}</b><span>${c}</span></div>`).join("")}</div>
+      <p class="roles">${Object.entries(byRole).map(([r, n]) => `<span class="tag${n ? "" : " warn"}">${r}: ${n}</span>`).join("")}</p>
+      ${missingProfs.length ? `<p class="muted small">Yrken ingen har än: ${missingProfs.join(", ")}.</p>` : `<p class="muted small">Alla huvudyrken är täckta.</p>`}
+    </div>`;
+  }
+
+  function renderSummary() {
+    $("#summary").innerHTML = `<h2>Gruppen just nu</h2>
+      <div class="factions">${factionSummary("Alliance")}${factionSummary("Horde")}</div>`;
   }
 
   function fillFilters() {
