@@ -1,5 +1,5 @@
 (() => {
-  const { SUPABASE_URL, SUPABASE_KEY, DISCORD_URL, RELEASE_DATE } = window.WF_CONFIG;
+  const { SUPABASE_URL, SUPABASE_KEY, DISCORD_URL, RELEASE_AT } = window.WF_CONFIG;
   const D = window.WF_DATA;
   const I = window.WF_I18N;
   const t = I.t;
@@ -510,12 +510,30 @@
   }
 
   // ---------- Övrigt ----------
+  let cdTimer = null;
+
+  function tickCountdown() {
+    const ms = new Date(RELEASE_AT).getTime() - Date.now();
+    const title = $('#cdTitle');
+    if (ms <= 0) {
+      title.dataset.i18n = 'cdLive';
+      title.textContent = t('cdLive');
+      $('#cdGrid').hidden = true;
+      clearInterval(cdTimer);
+      cdTimer = null;
+      return;
+    }
+    const s = Math.floor(ms / 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    $('#cdD').textContent = pad(Math.floor(s / 86400));
+    $('#cdH').textContent = pad(Math.floor((s % 86400) / 3600));
+    $('#cdM').textContent = pad(Math.floor((s % 3600) / 60));
+    $('#cdS').textContent = pad(s % 60);
+  }
+
   function countdown() {
-    const days = Math.ceil((new Date(`${RELEASE_DATE}T00:00:00`) - new Date()) / 86400000);
-    const el = $('#countdown');
-    if (days > 1) el.textContent = t('cdDays', { n: days });
-    else if (days === 1) el.textContent = t('cdTomorrow');
-    else el.textContent = t('cdLive');
+    tickCountdown();
+    if (!cdTimer) cdTimer = setInterval(tickCountdown, 1000);
   }
 
   function rerender() {

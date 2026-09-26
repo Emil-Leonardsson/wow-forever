@@ -304,3 +304,24 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 /* Tryck-för-att-visa */
 .tip { position: fixed; z-index: 100; max-width: min(260px, calc(100vw - 16px)); padding: 8px 12px; border-radius: 8px; background: #120f0a; color: var(--text); border: 1px solid var(--gold); box-shadow: 0 6px 20px rgba(0,0,0,.6); font-size: .85rem; line-height: 1.35; pointer-events: none; }
 @media (hover: none) { .opt.off .pick:disabled { pointer-events: none; } }
+
+/* ---------- Nedräkning i Blizzards stil ---------- */
+.countdown {
+  max-width: 640px; margin: 14px auto 12px; padding: 22px 16px 18px; text-align: center;
+  border-top: 10px solid #c9b08a; border-bottom: 10px solid #c9b08a; border-radius: 2px;
+  background:
+    radial-gradient(2px 2px at 12% 22%, rgba(140,220,255,.8), transparent 60%),
+    radial-gradient(2px 2px at 78% 30%, rgba(140,220,255,.7), transparent 60%),
+    radial-gradient(3px 3px at 60% 78%, rgba(120,230,220,.75), transparent 60%),
+    radial-gradient(2px 2px at 25% 82%, rgba(140,220,255,.6), transparent 60%),
+    radial-gradient(circle at 50% 40%, rgba(255,255,255,.07) 0, transparent 55%),
+    repeating-radial-gradient(circle at 50% 45%, rgba(255,255,255,.035) 0 6px, transparent 6px 22px),
+    linear-gradient(#0b6d8e, #0a4f6d);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.cd-title { margin: 0 0 12px; font: 400 clamp(1.15rem, 4.6vw, 1.6rem)/1.25 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; color: #f4ecd8; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.cd-grid { display: flex; align-items: flex-start; justify-content: center; gap: clamp(6px, 3vw, 22px); }
+.cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.2ch; }
+.cd-unit b { font: 400 clamp(2.4rem, 11vw, 3.6rem)/1 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.cd-unit span { margin-top: 6px; font-size: clamp(.7rem, 2.6vw, .95rem); letter-spacing: .04em; text-transform: uppercase; color: #eadfc6; }
+.cd-grid i { font: 400 clamp(1.6rem, 7vw, 2.4rem)/1.5 Georgia, serif; font-style: normal; color: #f4ecd8; opacity: .85; }

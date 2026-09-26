@@ -24,7 +24,7 @@
   <meta name="twitter:description" content="Vi startar 4 november och vill hitta lite folk att spela med.">
   <meta name="twitter:image" content="https://wowforever.party/assets/og-image.jpg">
   <link rel="icon" type="image/webp" href="assets/logo-color.webp">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
   <header class="hero">
@@ -44,9 +44,18 @@
       <p class="eyebrow" data-i18n="eyebrow">Spelargrupp av Emil &amp; Cattis</p>
       <h1><img class="logo" src="assets/logo-color.webp" alt="World of Warcraft Forever" width="900" height="761"></h1>
       <p class="lead" data-i18n="lead">Vi startar 4 november och vill hitta lite folk att spela med. Vi kör inte så seriöst, för vi har inte så mycket tid. Alla är välkomna, oavsett om du är nybörjare, veteran eller precis som vi har lite tid att spela.</p>
-      <div class="chips">
-        <span class="chip" id="countdown"></span>
-      </div>
+      <section class="countdown" id="countdownBox" role="timer" aria-live="off">
+        <p class="cd-title" id="cdTitle" data-i18n="cdTitle">World of Warcraft: Forever kommer 4 november!</p>
+        <div class="cd-grid" id="cdGrid">
+          <div class="cd-unit"><b id="cdD">--</b><span data-i18n="cdUnitD">Dagar</span></div>
+          <i aria-hidden="true">:</i>
+          <div class="cd-unit"><b id="cdH">--</b><span data-i18n="cdUnitH">Tim</span></div>
+          <i aria-hidden="true">:</i>
+          <div class="cd-unit"><b id="cdM">--</b><span data-i18n="cdUnitM">Min</span></div>
+          <i aria-hidden="true">:</i>
+          <div class="cd-unit"><b id="cdS">--</b><span data-i18n="cdUnitS">Sek</span></div>
+        </div>
+      </section>
       <nav class="jump">
         <a href="qr.html" class="btn" data-i18n="navShare">Dela eller skriv ut</a>
         <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener" data-i18n="discord">Gå med på Discord</a>
@@ -206,11 +215,11 @@
     </form>
   </dialog>
 
-  <script src="i18n.js?v=15"></script>
-  <script src="data.js?v=6"></script>
+  <script src="i18n.js?v=16"></script>
+  <script src="data.js?v=7"></script>
   <script src="tabs.js?v=1"></script>
   <script src="tips.js?v=1"></script>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=24"></script>
   <script src="groups.js?v=10"></script>
 </body>
 </html>

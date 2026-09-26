@@ -4,7 +4,8 @@ window.WF_CONFIG = {
   SUPABASE_URL: 'https://kpaolyovfybxedgaigvp.supabase.co',
   SUPABASE_KEY: 'sb_publishable_9Oup-6p4XC7tYi428XUxTA_KcQbyDpT',
   DISCORD_URL: 'https://discord.gg/wAfSuvWcv',
-  RELEASE_DATE: '2026-11-04',
+  // Matchar Blizzards egen nedräkning: 4 november 23:00 UTC (15:00 Pacific).
+  RELEASE_AT: '2026-11-04T23:00:00Z',
 };
 
 window.WF_DATA = (() => {
