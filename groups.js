@@ -32,7 +32,7 @@
 
   const emptyGroup = () => ({
     name: '', description: '', faction: 'Any', ruleset: 'Normal', language: 'sv', tone: 'casual', play_times: '',
-    members_now: 1, members_target: 5, looking_any: true, looking_roles: [], looking_classes: [], looking_professions: [],
+    members_now: 1, looking_any: true, looking_roles: [], looking_classes: [], looking_professions: [],
     contact: '', status: 'open',
   });
 
@@ -147,7 +147,7 @@
         <span class="tag">${grp.ruleset}</span>
         <span class="tag">${langLabel(grp.language)}</span>
         <span class="tag">${toneLabel(grp.tone)}</span>
-        <span class="tag">${t('grpMembers', { a: grp.members_now, b: grp.members_target })}</span>
+        <span class="tag">${t(grp.members_now === 1 ? 'grpMemberOne' : 'grpMemberMany', { a: grp.members_now })}</span>
       </p>
       ${grp.play_times ? `<p class="gplay">${esc(grp.play_times)}</p>` : ''}
       ${grp.description ? `<p class="gdesc">${esc(grp.description)}</p>` : ''}
@@ -233,8 +233,7 @@
 
         <div class="field-row">
           <label class="field"><span>${t('gPlay')}</span><input data-gf="play_times" maxlength="120" placeholder="${esc(t('gPlayPh'))}" value="${esc(g.play_times)}"></label>
-          <label class="field narrow"><span>${t('gMembersNow')}</span><input data-gf="members_now" type="number" min="1" max="100" value="${g.members_now}"></label>
-          <label class="field narrow"><span>${t('gMembersTarget')}</span><input data-gf="members_target" type="number" min="1" max="100" value="${g.members_target}"></label>
+          <label class="field narrow"><span>${t('gMembersNow')}</span><input data-gf="members_now" type="number" min="1" max="10000" value="${g.members_now}"></label>
         </div>
 
         <div class="group-label">${t('grpLooking')}</div>
@@ -263,7 +262,7 @@
   function fromMine(m) {
     return {
       ...emptyGroup(), name: m.name, description: m.description, faction: m.faction, ruleset: m.ruleset, language: m.language,
-      tone: m.tone, play_times: m.play_times, members_now: m.members_now, members_target: m.members_target,
+      tone: m.tone, play_times: m.play_times, members_now: m.members_now,
       looking_any: m.looking_any, looking_roles: m.looking_roles || [], looking_classes: m.looking_classes || [],
       looking_professions: m.looking_professions || [], contact: m.contact, status: m.status,
     };
@@ -442,7 +441,7 @@
     document.addEventListener('input', (e) => {
       const f = e.target.dataset && e.target.dataset.gf;
       if (!f || f === 'looking_any') return;
-      g[f] = e.target.type === 'number' ? Math.max(1, Math.min(100, parseInt(e.target.value, 10) || 1)) : e.target.value;
+      g[f] = e.target.type === 'number' ? Math.max(1, Math.min(10000, parseInt(e.target.value, 10) || 1)) : e.target.value;
     });
 
     document.addEventListener('change', (e) => {
