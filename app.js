@@ -495,6 +495,14 @@
     showError('');
   }
 
+  // Delas med groups.js
+  let markReady;
+  const ready = new Promise((r) => { markReady = r; });
+  window.WF_APP = {
+    rpc, sprite, esc, ready,
+    getMine: () => (editToken ? { name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
+  };
+
   async function init() {
     I.applyStatic();
     countdown();
@@ -505,6 +513,7 @@
     }
     fillFilters();
     await loadSheets();
+    markReady();
     renderEditors();
     bindEditors();
     bindFeedback();

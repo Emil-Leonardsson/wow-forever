@@ -207,3 +207,56 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 @media (max-width: 760px) {
   .race-groups { grid-template-columns: 1fr; }
 }
+
+/* ---------- Spelgrupper ---------- */
+.panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.panel-head h2 { margin: 0; }
+.gcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.gcard { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: var(--radius); background: var(--panel-2); border: 1px solid var(--line); border-top-width: 4px; }
+.gcard.alliance { border-top-color: var(--alliance); }
+.gcard.horde { border-top-color: var(--horde); }
+.gcard.any { border-top-color: var(--gold-dim); }
+.gcard header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.gcard h3 { margin: 0; font-size: 1.15rem; color: var(--gold); }
+.fchip { flex: none; padding: 1px 10px; border-radius: 999px; font-size: .75rem; border: 1px solid var(--line); }
+.fchip.alliance { border-color: #2c4a8a; color: #8fb1f2; background: #101a30; }
+.fchip.horde { border-color: #7d2a22; color: #ee8a7d; background: #2a0f0d; }
+.fchip.any { color: var(--gold); }
+.gcard p { margin: 0; }
+.gmeta .tag { margin: 0 4px 4px 0; }
+.gplay { font-size: .85rem; color: var(--muted); }
+.gdesc { white-space: pre-line; overflow-wrap: anywhere; font-size: .92rem; color: #d4c9b1; }
+.glooking { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .9rem; }
+.glooking b { color: var(--muted); font-weight: 600; margin-right: 2px; }
+.lk .sprite { vertical-align: middle; }
+.gcard footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 4px; }
+.linklike { background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: .8rem; text-decoration: underline; cursor: pointer; }
+.linklike:hover { color: var(--danger); }
+
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--gold-dim); border-radius: 8px; overflow: hidden; align-self: flex-start; margin-bottom: 12px; }
+.field .seg { margin-bottom: 0; }
+.seg button { padding: 8px 14px; font: inherit; font-size: .9rem; cursor: pointer; border: 0; background: #120f0a; color: var(--muted); }
+.seg button + button { border-left: 1px solid var(--gold-dim); }
+.seg button[aria-pressed="true"] { background: var(--gold); color: #2a1c05; font-weight: 700; }
+.chipbtn { padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .9rem; cursor: pointer; border: 1px solid var(--line); background: #120f0a; color: var(--text); }
+.chipbtn[aria-pressed="true"] { border-color: var(--gold); background: rgba(240,200,90,.15); color: var(--gold); }
+.field.narrow { flex: 0 1 130px; }
+
+.badge-inline { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--danger); color: #fff; font-size: .75rem; font-weight: 700; line-height: 1; }
+
+.reqs { margin: 12px 0 18px; }
+.reqs h3 { margin: 0 0 8px; color: var(--gold); }
+.req { padding: 12px; margin-bottom: 10px; border-radius: var(--radius); background: var(--panel-2); border: 1px solid var(--line); }
+.req.pending { border-color: var(--gold-dim); }
+.req.declined { opacity: .6; }
+.req header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.reqchars { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 6px; }
+.reqchars li { display: flex; align-items: center; gap: 8px; font-size: .9rem; }
+.reqcontact { margin: 6px 0; padding: 6px 10px; border-radius: 6px; background: rgba(88,179,106,.12); border: 1px solid var(--ok); }
+.req .actions { margin-top: 8px; }
+
+.apchars { display: grid; gap: 6px; margin-bottom: 12px; }
+.apchar { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); }
+.apchar.off { opacity: .5; }
+.apchar em { font-style: normal; color: var(--muted); font-size: .8rem; }
+#applyDialog, #reportDialog { max-height: calc(100vh - 32px); overflow: auto; }
