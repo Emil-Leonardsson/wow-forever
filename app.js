@@ -447,6 +447,7 @@
       try {
         await rpc('submit_feedback', { p_message: message, p_contact: $('#fbContactInput').value.trim(), p_lang: I.lang });
         err.hidden = true;
+        loadFeedbackBadge();
         $('#fbFields').hidden = true;
         btn.hidden = true;
         done.textContent = t('fbThanks');
@@ -462,31 +463,13 @@
     });
   }
 
-  // ---------- Ägarens feedback-räknare ----------
-  // Ägaren öppnar sidan en gång med ?admin=<nyckel>. Nyckeln sparas i webbläsaren och ger en räknare
-  // på feedback-ikonen. Alla andra får null från databasen och ser ingen räknare.
-  const ADMIN_KEY = 'wf_admin';
+  // ---------- Feedback-räknare (antal obehandlade, visas för alla) ----------
   async function loadFeedbackBadge() {
-    const params = new URLSearchParams(location.search);
-    const fromUrl = params.get('admin');
     try {
-      if (fromUrl) {
-        localStorage.setItem(ADMIN_KEY, fromUrl);
-        params.delete('admin');
-        const qs = params.toString();
-        history.replaceState(null, '', location.pathname + (qs ? `?${qs}` : '') + location.hash);
-      }
-    } catch { /* ignoreras */ }
-    let secret = null;
-    try { secret = localStorage.getItem(ADMIN_KEY); } catch { /* ignoreras */ }
-    if (!secret) return;
-    try {
-      const n = await rpc('feedback_count', { p_secret: secret });
+      const n = await rpc('feedback_unread_count', {});
       const badge = $('#fbBadge');
-      if (n === null) { try { localStorage.removeItem(ADMIN_KEY); } catch { /* ignoreras */ } return; }
       badge.textContent = n > 99 ? '99+' : String(n);
-      badge.hidden = n === 0;
-      $('#fbOpen').title = n ? `${n} ${I.lang === 'sv' ? 'nya' : 'new'}` : '';
+      badge.hidden = !n;
     } catch (ex) {
       console.error(ex);
     }

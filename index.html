@@ -11,7 +11,7 @@
   <meta property="og:description" content="Skriv upp din karaktär och kom med i gruppen. Play with us!">
   <meta property="og:image" content="https://emil-leonardsson.github.io/wow-forever/assets/logo-color.webp">
   <link rel="icon" type="image/webp" href="assets/logo-color.webp">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
   <header class="hero">
@@ -33,13 +33,17 @@
       <p class="lead" data-i18n="lead">Vi startar 4 november och vill spela med folk vi känner. Nybörjare, rostiga veteraner och glesa speltider är välkomna.</p>
       <div class="chips">
         <span class="chip" id="countdown"></span>
+      </div>
+      <p class="playing-label" data-i18n="playingLabel">Vi kommer spela utifrån detta:</p>
+      <div class="chips">
         <span class="chip" data-i18n="chipServer">Servertyp: Normal</span>
+        <span class="chip faction-alliance" data-i18n="chipFaction">Alliance</span>
       </div>
       <nav class="jump">
         <a href="#anmalan" class="btn primary" data-i18n="navSignup">Skriv upp dig</a>
-        <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener" data-i18n="discord">Gå med på Discord</a>
         <a href="#roster" class="btn" data-i18n="navRoster">Vilka är med</a>
         <a href="qr.html" class="btn" data-i18n="navShare">Dela eller skriv ut</a>
+        <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener" data-i18n="discord">Gå med på Discord</a>
       </nav>
     </div>
   </header>
@@ -126,8 +130,8 @@
     </form>
   </dialog>
 
-  <script src="i18n.js?v=1"></script>
+  <script src="i18n.js?v=2"></script>
   <script src="data.js?v=5"></script>
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
