@@ -332,6 +332,7 @@
 
         ${editing ? `<div class="group-label">${t('gStatus')}</div>${seg('status', [['open', t('gOpen')], ['closed', t('gClosed')]], g.status)}` : ''}
 
+        <p class="muted small priv-note">${t('privNote')}</p>
         <p class="error" id="gError" role="alert" ${formError ? '' : 'hidden'}>${esc(formError)}</p>
         <div class="actions">
           <button type="submit" class="btn primary">${t(editing ? 'gSaveBtn' : 'gCreateBtn')}</button>
@@ -436,6 +437,7 @@
         <span><b>${esc(c.name)}</b> ${esc(c.race)} ${esc(c.class)} ${fits(c) ? '' : `<em>${t('applyWrongFaction')}</em>`}</span></label>`).join('')}</div>
       <label class="field"><span>${t('applyMessage')} <em>${t('gDescNote')}</em></span><textarea id="apMessage" rows="3" maxlength="500"></textarea></label>
       <p class="muted small">${t('applyPublicNote')}</p>
+      <p class="muted small priv-note">${t('privNote')}</p>
       <p class="error" id="apError" role="alert" hidden></p>
       <div class="actions">
         <button type="submit" class="btn primary" id="apSend">${t('applySend')}</button>

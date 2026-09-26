@@ -592,6 +592,7 @@
     bindEditors();
     bindFeedback();
     $('#privOpen').addEventListener('click', () => $('#privDialog').showModal());
+    document.addEventListener('click', (e) => { if (e.target.closest('[data-open-priv]')) $('#privDialog').showModal(); });
     $('#privClose').addEventListener('click', () => $('#privDialog').close());
     $('#privDialog').addEventListener('click', (e) => { if (e.target === $('#privDialog')) $('#privDialog').close(); });
     $('#shareBtn').addEventListener('click', () => {

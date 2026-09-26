@@ -338,3 +338,10 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 .priv b { color: var(--gold); }
 #privDialog { max-height: calc(100vh - 32px); overflow: auto; }
 .footlink.linklike { color: var(--gold); font-size: .85rem; }
+
+.priv h3 { margin: 16px 0 6px; font-size: 1rem; color: var(--gold); }
+.priv ul { margin: 0 0 10px; padding-left: 1.2rem; font-size: .92rem; }
+.priv li { margin-bottom: 6px; }
+.priv .upd { color: var(--muted); font-size: .82rem; }
+.priv-note { margin: 10px 0 0; }
+#privDialog { width: min(640px, calc(100vw - 32px)); }
