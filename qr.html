@@ -55,11 +55,6 @@
         <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
     </div>
-    <label><span data-i18n="qrAddress">Adress som QR-koden pekar på</span>
-      <input id="url" type="url" placeholder="https://...">
-    </label>
-    <button type="button" id="copy" data-i18n="qrCopy">Kopiera länk</button>
-    <button type="button" id="share" data-i18n="qrShare" hidden>Dela</button>
     <button type="button" id="print" data-i18n="qrPrint">Skriv ut</button>
   </div>
 
@@ -72,45 +67,27 @@
     <p class="url" id="urlText"></p>
   </main>
 
-  <script src="i18n.js?v=19"></script>
+  <script src="i18n.js?v=20"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
     const I = window.WF_I18N;
     I.applyStatic();
 
-    const input = document.getElementById('url');
-    // Sidan ligger i samma mapp som qr.html. Ingen lagring, så ett gammalt värde kan aldrig leva kvar.
-    input.value = new URL('./', location.href).href;
+    // Sidan ligger i samma mapp som qr.html.
+    const url = new URL('./', location.href).href;
 
     function draw() {
-      const url = input.value.trim();
       const box = document.getElementById('qr');
       document.getElementById('urlText').textContent = url;
-      if (!url || typeof qrcode === 'undefined') { box.innerHTML = ''; return; }
+      if (typeof qrcode === 'undefined') { box.innerHTML = ''; return; }
       const qr = qrcode(0, 'M');
       qr.addData(url);
       qr.make();
       // Hex-färger i stället för namn, så inget läge kan tolka om dem.
       box.innerHTML = qr.createSvgTag({ cellSize: 8, margin: 2, scalable: true })
-        .replace(/fill="white"/g, "fill=\"#ffffff\"").replace(/fill="black"/g, "fill=\"#000000\"");
+        .replace(/fill="white"/g, 'fill="#ffffff"').replace(/fill="black"/g, 'fill="#000000"');
     }
-    input.addEventListener('input', draw);
     document.getElementById('print').addEventListener('click', () => window.print());
-
-    const copyBtn = document.getElementById('copy');
-    copyBtn.addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(input.value.trim()); } catch { input.select(); document.execCommand('copy'); }
-      copyBtn.textContent = I.t('copied');
-      setTimeout(() => { copyBtn.textContent = I.t('qrCopy'); }, 1800);
-    });
-
-    const shareBtn = document.getElementById('share');
-    if (navigator.share) {
-      shareBtn.hidden = false;
-      shareBtn.addEventListener('click', () => {
-        navigator.share({ title: I.t('docTitle'), text: I.t('qrPitch'), url: input.value.trim() }).catch(() => {});
-      });
-    }
     draw();
   </script>
 </body>

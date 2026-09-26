@@ -217,10 +217,7 @@ window.WF_I18N = (() => {
       qrDocTitle: 'Dela WoW Forever-gruppen',
       qrPitch: 'Vi startar 4 november och vill hitta lite folk att spela med. Hitta en spelgrupp som passar dig, eller skapa en egen.',
       qrCta: 'Skanna och skriv upp din karaktär',
-      qrAddress: 'Adress som QR-koden pekar på',
       qrPrint: 'Skriv ut',
-      qrCopy: 'Kopiera länk',
-      qrShare: 'Dela',
       qrBack: '← Tillbaka till sidan',
     },
 
@@ -437,10 +434,7 @@ window.WF_I18N = (() => {
       qrDocTitle: 'Share the WoW Forever group',
       qrPitch: "We start on 4 November and want to find some people to play with. Find a play group that suits you, or create your own.",
       qrCta: 'Scan and sign up your character',
-      qrAddress: 'Address the QR code points to',
       qrPrint: 'Print',
-      qrCopy: 'Copy link',
-      qrShare: 'Share',
       qrBack: '← Back to the page',
     },
   };
