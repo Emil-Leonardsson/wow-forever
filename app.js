@@ -1,6 +1,8 @@
 (() => {
   const { SUPABASE_URL, SUPABASE_KEY, DISCORD_URL, RELEASE_DATE } = window.WF_CONFIG;
   const D = window.WF_DATA;
+  const I = window.WF_I18N;
+  const t = I.t;
   const $ = (sel) => document.querySelector(sel);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -66,7 +68,7 @@
 
   // ---------- Formulärets tillstånd ----------
   const emptyChar = () => ({
-    name: '', faction: '', race: '', class: '', ruleset: 'Normal',
+    name: '', faction: '', race: '', class: '', gender: 'Male', ruleset: 'Normal',
     prof1: '', prof2: '', secondary: [], roles: [],
   });
   let chars = [emptyChar()];
@@ -80,72 +82,81 @@
   };
 
   const profOptions = (selected) =>
-    `<option value="">Inget</option>` +
+    `<option value="">${t('none')}</option>` +
     D.professions.map((p) => `<option${p === selected ? ' selected' : ''}>${p}</option>`).join('');
+
+  const genderLabel = (g) => t(g === 'Female' ? 'female' : 'male');
+
+  function genderButton(i, g, ch) {
+    const on = ch.gender === g;
+    return `<div class="opt"><span class="lbl">${genderLabel(g)}</span>
+      <button type="button" class="pick gender ${g.toLowerCase()}${on ? ' on' : ''}" data-act="gender" data-i="${i}" data-gender="${g}"
+      title="${genderLabel(g)}" aria-label="${genderLabel(g)}" aria-pressed="${on}">${sprite('gender', g, 200, 'fluid')}</button></div>`;
+  }
 
   function raceButton(i, r, ch) {
     const on = ch.faction === r.faction && ch.race === r.race;
-    return `<button type="button" class="pick race ${r.faction.toLowerCase()}${on ? ' on' : ''}"
-      data-act="race" data-i="${i}" data-faction="${r.faction}" data-race="${esc(r.race)}" aria-pressed="${on}">
-      ${sprite('race', D.raceKey(r.faction, r.race), 56)}<span>${esc(r.race)}</span></button>`;
+    return `<div class="opt"><span class="lbl">${esc(r.race)}</span>
+      <button type="button" class="pick race${on ? ' on' : ''}" data-act="race" data-i="${i}" data-faction="${r.faction}" data-race="${esc(r.race)}"
+      title="${esc(r.race)}" aria-label="${esc(r.race)}" aria-pressed="${on}">${sprite('race', D.raceKey(r.faction, r.race, ch.gender), 200, 'fluid')}</button></div>`;
   }
 
   function classButton(i, cls, ch) {
     const race = D.findRace(ch.faction, ch.race);
     const allowed = race ? race.classes.includes(cls) : false;
     const on = ch.class === cls;
-    return `<div class="opt${allowed ? "" : " off"}"><span class="lbl">${cls}</span>
-      <button type="button" class="pick cls${on ? " on" : ""}" data-act="class" data-i="${i}" data-class="${cls}"
-      ${allowed ? "" : "disabled"} title="${cls}" aria-label="${cls}" aria-pressed="${on}">${sprite("class", cls, 200, "fluid")}</button></div>`;
+    return `<div class="opt${allowed ? '' : ' off'}"><span class="lbl">${cls}</span>
+      <button type="button" class="pick cls${on ? ' on' : ''}" data-act="class" data-i="${i}" data-class="${cls}"
+      ${allowed ? '' : 'disabled'} title="${cls}" aria-label="${cls}" aria-pressed="${on}">${sprite('class', cls, 200, 'fluid')}</button></div>`;
   }
 
   function rulesetButton(i, rs, ch) {
     const off = D.unavailableRulesets.includes(rs);
     const on = ch.ruleset === rs && !off;
-    const title = off ? `${D.rulesetInfo[rs]} Finns inte vid launch.` : D.rulesetInfo[rs];
-    return `<div class="opt${off ? " off" : ""}" title="${esc(title)}"><span class="lbl">${rs}</span>
-      <button type="button" class="pick rs${on ? " on" : ""}" data-act="ruleset" data-i="${i}" data-ruleset="${rs}"
-      title="${esc(title)}" aria-label="${rs}" ${off ? "disabled" : ""} aria-pressed="${on}">${sprite("ruleset", rs, 200, "fluid")}</button></div>`;
+    const title = off ? `${t('rs_' + rs)} ${t('notAtLaunch')}` : t('rs_' + rs);
+    return `<div class="opt${off ? ' off' : ''}" title="${esc(title)}"><span class="lbl">${rs}</span>
+      <button type="button" class="pick rs${on ? ' on' : ''}" data-act="ruleset" data-i="${i}" data-ruleset="${rs}"
+      title="${esc(title)}" aria-label="${rs}" ${off ? 'disabled' : ''} aria-pressed="${on}">${sprite('ruleset', rs, 200, 'fluid')}</button></div>`;
   }
 
   function renderEditors() {
     const host = $('#charEditors');
     host.innerHTML = chars.map((ch, i) => {
-      const allianceRaces = D.races.filter((r) => r.faction === 'Alliance');
-      const hordeRaces = D.races.filter((r) => r.faction === 'Horde');
+      const raceGroup = (faction) => `<div class="race-group ${faction.toLowerCase()}"><h4>${faction}</h4>
+        <div class="picks races-row">${D.races.filter((r) => r.faction === faction).map((r) => raceButton(i, r, ch)).join('')}</div></div>`;
       return `<fieldset class="char" data-i="${i}">
-        <legend>Karaktär ${i + 1}</legend>
+        <legend>${t('character')} ${i + 1}</legend>
         <label class="field">
-          <span>Karaktärens namn</span>
+          <span>${t('charName')}</span>
           <input data-f="name" data-i="${i}" maxlength="24" value="${esc(ch.name)}" required>
         </label>
 
-        <div class="group-label">Race</div>
-        <div class="races">
-          <div class="side alliance"><h4>Alliance</h4><div class="picks">${allianceRaces.map((r) => raceButton(i, r, ch)).join('')}</div></div>
-          <div class="side horde"><h4>Horde</h4><div class="picks">${hordeRaces.map((r) => raceButton(i, r, ch)).join('')}</div></div>
-        </div>
+        <div class="group-label">${t('gender')}</div>
+        <div class="picks genders">${D.genders.map((g) => genderButton(i, g, ch)).join('')}</div>
 
-        <div class="group-label">Klass${ch.class ? `: <b class="picked">${ch.class}</b>` : ''} ${ch.race ? '' : '<em>(välj race först)</em>'}</div>
+        <div class="group-label">${t('race')}</div>
+        ${raceGroup('Alliance')}${raceGroup('Horde')}
+
+        <div class="group-label">${t('cls')}${ch.class ? `: <b class="picked">${ch.class}</b>` : ''} ${ch.race ? '' : `<em>${t('pickRaceFirst')}</em>`}</div>
         <div class="picks classes">${D.classes.map((c) => classButton(i, c, ch)).join('')}</div>
 
-        <div class="group-label">Servertyp</div>
+        <div class="group-label">${t('serverType')}</div>
         <div class="picks rulesets">${D.rulesets.map((rs) => rulesetButton(i, rs, ch)).join('')}</div>
 
         <div class="field-row">
-          <label class="field"><span>Yrke 1</span><select data-f="prof1" data-i="${i}">${profOptions(ch.prof1)}</select></label>
-          <label class="field"><span>Yrke 2</span><select data-f="prof2" data-i="${i}">${profOptions(ch.prof2)}</select></label>
+          <label class="field"><span>${t('prof1')}</span><select data-f="prof1" data-i="${i}">${profOptions(ch.prof1)}</select></label>
+          <label class="field"><span>${t('prof2')}</span><select data-f="prof2" data-i="${i}">${profOptions(ch.prof2)}</select></label>
         </div>
 
-        <div class="group-label">Roller <em>(valfritt, välj flera)</em></div>
+        <div class="group-label">${t('roles')} <em>${t('rolesNote')}</em></div>
         <div class="secondary">${D.roles.map((r) =>
           `<label class="tick"><input type="checkbox" data-f="roles" data-i="${i}" value="${r}"${ch.roles.includes(r) ? ' checked' : ''}> ${r}</label>`).join('')}</div>
 
-        <div class="group-label">Sekundära yrken</div>
+        <div class="group-label">${t('secondary')}</div>
         <div class="secondary">${D.secondaryProfessions.map((s) =>
           `<label class="tick"><input type="checkbox" data-f="secondary" data-i="${i}" value="${s}"${ch.secondary.includes(s) ? ' checked' : ''}> ${s}</label>`).join('')}</div>
 
-        ${chars.length > 1 ? `<button type="button" class="btn small danger" data-act="remove" data-i="${i}">Ta bort karaktär ${i + 1}</button>` : ''}
+        ${chars.length > 1 ? `<button type="button" class="btn small danger" data-act="remove" data-i="${i}">${t('removeChar', { n: i + 1 })}</button>` : ''}
       </fieldset>`;
     }).join('');
   }
@@ -180,6 +191,7 @@
       const ch = chars[i];
       if (!ch) return;
       switch (btn.dataset.act) {
+        case 'gender': ch.gender = btn.dataset.gender; break;
         case 'race': {
           ch.faction = btn.dataset.faction;
           ch.race = btn.dataset.race;
@@ -204,19 +216,19 @@
   }
 
   function validate() {
-    if (!$('#displayName').value.trim()) return 'Skriv ditt namn eller smeknamn.';
+    if (!$('#displayName').value.trim()) return t('errName');
     for (const [i, ch] of chars.entries()) {
       const n = i + 1;
-      if (!ch.name.trim()) return `Karaktär ${n}: skriv ett namn.`;
-      if (!ch.race) return `Karaktär ${n}: välj race.`;
-      if (!ch.class) return `Karaktär ${n}: välj klass.`;
-      if (ch.prof1 && ch.prof1 === ch.prof2) return `Karaktär ${n}: yrke 1 och 2 är samma.`;
+      if (!ch.name.trim()) return t('errCharName', { n });
+      if (!ch.race) return t('errRace', { n });
+      if (!ch.class) return t('errClass', { n });
+      if (ch.prof1 && ch.prof1 === ch.prof2) return t('errProf', { n });
     }
     return '';
   }
 
   const payloadChars = () => chars.map((c) => ({
-    name: c.name.trim(), faction: c.faction, race: c.race, class: c.class, ruleset: c.ruleset,
+    name: c.name.trim(), faction: c.faction, race: c.race, class: c.class, gender: c.gender, ruleset: c.ruleset,
     prof1: c.prof1, prof2: c.prof2, secondary: c.secondary, roles: c.roles,
   }));
 
@@ -224,7 +236,7 @@
 
   function discordButton() {
     return DISCORD_URL
-      ? `<a class="btn discord" href="${esc(DISCORD_URL)}" target="_blank" rel="noopener">Gå med på Discord</a>`
+      ? `<a class="btn discord" href="${esc(DISCORD_URL)}" target="_blank" rel="noopener">${t('discord')}</a>`
       : '';
   }
 
@@ -246,7 +258,7 @@
         });
         if (!ok) throw new Error('Ogiltig länk');
         $('#success').hidden = false;
-        $('#success').innerHTML = `<strong>Sparat!</strong> Dina ändringar syns i listan.`;
+        $('#success').innerHTML = t('saved');
       } else {
         const token = await rpc('register', {
           p_display_name: displayName, p_contact: contact, p_characters: payloadChars(),
@@ -255,9 +267,9 @@
         store.set(token);
         const link = editLink(token);
         $('#success').hidden = false;
-        $('#success').innerHTML = `<strong>Välkommen med!</strong> Du syns nu i listan.
-          <p>Spara den här privata länken om du vill ändra dina karaktärer senare. Den fungerar som ditt lösenord, dela den inte.</p>
-          <div class="linkbox"><input readonly id="editLinkInput" value="${esc(link)}"><button type="button" class="btn small" id="copyLink">Kopiera</button></div>
+        $('#success').innerHTML = `${t('welcome')}
+          <p>${t('keepLink')}</p>
+          <div class="linkbox"><input readonly id="editLinkInput" value="${esc(link)}"><button type="button" class="btn small" id="copyLink">${t('copy')}</button></div>
           <div class="actions">${discordButton()}</div>`;
         setEditMode(true);
       }
@@ -265,14 +277,14 @@
       await refreshRoster();
     } catch (ex) {
       console.error(ex);
-      showError('Något gick fel. Försök igen om en stund.');
+      showError(t('errGeneric'));
     } finally {
       btn.disabled = false;
     }
   }
 
   async function onDelete() {
-    if (!editToken || !confirm('Ta bort hela din registrering, inklusive alla karaktärer?')) return;
+    if (!editToken || !confirm(t('confirmDelete'))) return;
     try {
       await rpc('delete_mine', { p_token: editToken });
       editToken = null;
@@ -283,22 +295,21 @@
       setEditMode(false);
       renderEditors();
       $('#success').hidden = false;
-      $('#success').textContent = 'Din registrering är borttagen.';
+      $('#success').textContent = t('deleted');
       await refreshRoster();
     } catch (ex) {
       console.error(ex);
-      showError('Kunde inte ta bort. Försök igen.');
+      showError(t('errDelete'));
     }
   }
 
   function setEditMode(on) {
     $('#deleteBtn').hidden = !on;
-    $('#submitBtn').textContent = on ? 'Spara ändringar' : 'Skicka in';
-    $('#formTitle').textContent = on ? 'Din registrering' : 'Skriv upp dig';
+    $('#submitBtn').textContent = t(on ? 'save' : 'submit');
+    $('#formTitle').textContent = t(on ? 'formTitleEdit' : 'formTitle');
     $('#editBanner').hidden = !on;
-    if (on) {
-      $('#editBanner').textContent = 'Du redigerar din egen registrering. Ändringar ersätter det du skickade in förut.';
-    }
+    $('#formTitle').dataset.i18n = on ? 'formTitleEdit' : 'formTitle';
+    $('#submitBtn').dataset.i18n = on ? 'save' : 'submit';
   }
 
   async function loadOwn() {
@@ -312,7 +323,10 @@
       store.set(token);
       $('#displayName').value = mine.display_name || '';
       $('#contact').value = mine.contact || '';
-      chars = (mine.characters || []).map((c) => ({ ...emptyChar(), ...c, prof1: c.prof1 || '', prof2: c.prof2 || '', roles: c.roles || [], secondary: c.secondary || [] }));
+      chars = (mine.characters || []).map((c) => ({
+        ...emptyChar(), ...c, gender: c.gender || 'Male', prof1: c.prof1 || '', prof2: c.prof2 || '',
+        roles: c.roles || [], secondary: c.secondary || [],
+      }));
       if (!chars.length) chars = [emptyChar()];
       setEditMode(true);
       renderEditors();
@@ -329,7 +343,7 @@
       roster = await fetchRoster();
     } catch (ex) {
       console.error(ex);
-      $('#cards').innerHTML = '<p class="muted">Kunde inte hämta listan just nu.</p>';
+      $('#cards').innerHTML = `<p class="muted">${t('rosterFail')}</p>`;
       return;
     }
     renderRoster();
@@ -348,16 +362,16 @@
       (!f.rs || c.ruleset === f.rs));
 
     $('#rosterEmpty').hidden = rows.length > 0;
-    $('#rosterEmpty').textContent = roster.length ? 'Ingen matchar filtret.' : 'Ingen här än. Bli först!';
+    $('#rosterEmpty').textContent = t(roster.length ? 'noMatch' : 'rosterEmpty');
     $('#cards').innerHTML = rows.map((c) => {
       const profs = [c.prof1, c.prof2].filter(Boolean);
       return `<article class="card ${c.faction.toLowerCase()}">
-        ${sprite('race', D.raceKey(c.faction, c.race), 64, 'portrait')}
+        ${sprite('race', D.raceKey(c.faction, c.race, c.gender), 64, 'portrait')}
         <div class="body">
           <h3>${esc(c.name)}</h3>
           <p class="sub">${sprite('class', c.class, 20, 'inline')} ${esc(c.race)} ${esc(c.class)}${(c.roles || []).length ? ` · ${c.roles.map(esc).join('/')}` : ''}</p>
           <p class="profs">${profs.map((p) => `<span class="tag">${esc(p)}</span>`).join('')}${(c.secondary || []).map((p) => `<span class="tag dim">${esc(p)}</span>`).join('')}</p>
-          <p class="owner">Spelare: ${esc(c.player_name)}${c.ruleset !== 'Normal' ? ` · ${sprite('ruleset', c.ruleset, 16, 'inline')} ${esc(c.ruleset)}` : ''}</p>
+          <p class="owner">${t('player')}: ${esc(c.player_name)}${c.ruleset !== 'Normal' ? ` · ${sprite('ruleset', c.ruleset, 16, 'inline')} ${esc(c.ruleset)}` : ''}</p>
         </div>
       </article>`;
     }).join('');
@@ -376,39 +390,100 @@
       [c.prof1, c.prof2].filter(Boolean).forEach((p) => { byProf[p] = (byProf[p] || 0) + 1; });
       (c.secondary || []).forEach((p) => { bySec[p] = (bySec[p] || 0) + 1; });
     });
-    const profTile = (name, n) => `<div class="pc${n ? "" : " zero"}"><b>${n}</b><span>${name}</span></div>`;
+    const profTile = (name, n) => `<div class="pc${n ? '' : ' zero'}"><b>${n}</b><span>${name}</span></div>`;
+    const counts = t('sumCounts', {
+      p: players, pw: t(players === 1 ? 'playerOne' : 'playerMany'),
+      c: rows.length, cw: t(rows.length === 1 ? 'charOne' : 'charMany'),
+    });
     return `<div class="fsum ${faction.toLowerCase()}">
       <h3>${faction}</h3>
-      <p class="muted">${players} ${players === 1 ? "spelare" : "spelare"} och ${rows.length} ${rows.length === 1 ? "karaktär" : "karaktärer"}.</p>
-      <div class="classcount">${D.classes.map((c) => `<div class="cc${byClass[c] ? "" : " zero"}">${sprite("class", c, 32)}<b>${byClass[c]}</b><span>${c}</span></div>`).join("")}</div>
-      <p class="roles">${Object.entries(byRole).map(([r, n]) => `<span class="tag${n ? "" : " warn"}">${r}: ${n}</span>`).join("")}</p>
-      <div class="profcount">${D.professions.map((p) => profTile(p, byProf[p])).join("")}</div>
-      <div class="profcount sec">${D.secondaryProfessions.map((p) => profTile(p, bySec[p])).join("")}</div>
+      <p class="muted">${counts}</p>
+      <div class="classcount">${D.classes.map((c) => `<div class="cc${byClass[c] ? '' : ' zero'}">${sprite('class', c, 32)}<b>${byClass[c]}</b><span>${c}</span></div>`).join('')}</div>
+      <p class="roles">${Object.entries(byRole).map(([r, n]) => `<span class="tag${n ? '' : ' warn'}">${r}: ${n}</span>`).join('')}</p>
+      <div class="profcount">${D.professions.map((p) => profTile(p, byProf[p])).join('')}</div>
+      <div class="profcount sec">${D.secondaryProfessions.map((p) => profTile(p, bySec[p])).join('')}</div>
     </div>`;
   }
 
   function renderSummary() {
-    $("#summary").innerHTML = `<h2>Gruppen just nu</h2>
-      <div class="factions">${factionSummary("Alliance")}${factionSummary("Horde")}</div>`;
+    $('#summary').innerHTML = `<h2>${t('sumTitle')}</h2>
+      <div class="factions">${factionSummary('Alliance')}${factionSummary('Horde')}</div>`;
   }
 
   function fillFilters() {
+    const keep = ['#fClass', '#fProf', '#fRuleset'].map((s) => $(s).value);
+    ['#fClass', '#fProf', '#fRuleset'].forEach((s) => { $(s).querySelectorAll('option:not([value=""])').forEach((o) => o.remove()); });
     $('#fClass').insertAdjacentHTML('beforeend', D.classes.map((c) => `<option>${c}</option>`).join(''));
     $('#fProf').insertAdjacentHTML('beforeend', D.professions.map((p) => `<option>${p}</option>`).join(''));
     $('#fRuleset').insertAdjacentHTML('beforeend', D.rulesets.filter((r) => !D.unavailableRulesets.includes(r)).map((r) => `<option>${r}</option>`).join(''));
-    ['#fFaction', '#fClass', '#fProf', '#fRuleset'].forEach((s) => $(s).addEventListener('change', renderRoster));
+    ['#fClass', '#fProf', '#fRuleset'].forEach((s, n) => { $(s).value = keep[n]; });
+  }
+
+  // ---------- Feedback ----------
+  function bindFeedback() {
+    const dlg = $('#fbDialog');
+    const err = $('#fbError');
+    const done = $('#fbDone');
+    const open = () => {
+      err.hidden = true; done.hidden = true;
+      $('#fbFields').hidden = false;
+      $('#fbSend').hidden = false;
+      $('#fbMessage').value = '';
+      $('#fbCancel').textContent = t('fbCancel');
+      dlg.showModal();
+      $('#fbMessage').focus();
+    };
+    $('#fbOpen').addEventListener('click', open);
+    $('#fbCancel').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+
+    $('#fbForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if ($('#fbWebsite').value) return;
+      const message = $('#fbMessage').value.trim();
+      if (!message) { err.textContent = t('fbEmpty'); err.hidden = false; return; }
+      const btn = $('#fbSend');
+      btn.disabled = true;
+      try {
+        await rpc('submit_feedback', { p_message: message, p_contact: $('#fbContactInput').value.trim(), p_lang: I.lang });
+        err.hidden = true;
+        $('#fbFields').hidden = true;
+        btn.hidden = true;
+        done.textContent = t('fbThanks');
+        done.hidden = false;
+        $('#fbCancel').textContent = I.lang === 'sv' ? 'Stäng' : 'Close';
+      } catch (ex) {
+        console.error(ex);
+        err.textContent = t('fbError');
+        err.hidden = false;
+      } finally {
+        btn.disabled = false;
+      }
+    });
   }
 
   // ---------- Övrigt ----------
   function countdown() {
     const days = Math.ceil((new Date(`${RELEASE_DATE}T00:00:00`) - new Date()) / 86400000);
     const el = $('#countdown');
-    if (days > 1) el.textContent = `${days} dagar kvar till 4 november`;
-    else if (days === 1) el.textContent = 'Imorgon är det dags';
-    else el.textContent = 'Det är igång';
+    if (days > 1) el.textContent = t('cdDays', { n: days });
+    else if (days === 1) el.textContent = t('cdTomorrow');
+    else el.textContent = t('cdLive');
+  }
+
+  function rerender() {
+    countdown();
+    fillFilters();
+    renderEditors();
+    renderRoster();
+    renderSummary();
+    setEditMode(Boolean(editToken));
+    $('#fbCancel').textContent = t('fbCancel');
+    showError('');
   }
 
   async function init() {
+    I.applyStatic();
     countdown();
     if (DISCORD_URL) {
       const b = $('#discordBtn');
@@ -419,6 +494,8 @@
     await loadSheets();
     renderEditors();
     bindEditors();
+    bindFeedback();
+    ['#fFaction', '#fClass', '#fProf', '#fRuleset'].forEach((s) => $(s).addEventListener('change', renderRoster));
     $('#addChar').addEventListener('click', () => { chars.push(emptyChar()); renderEditors(); });
     $('#regForm').addEventListener('submit', onSubmit);
     $('#deleteBtn').addEventListener('click', onDelete);
@@ -427,9 +504,10 @@
         const input = $('#editLinkInput');
         input.select();
         navigator.clipboard?.writeText(input.value);
-        e.target.textContent = 'Kopierad';
+        e.target.textContent = t('copied');
       }
     });
+    I.onChange(rerender);
     await Promise.all([loadOwn(), refreshRoster()]);
   }
 

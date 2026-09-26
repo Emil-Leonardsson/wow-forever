@@ -7,22 +7,35 @@
   <meta name="description" content="Vi spelar WoW Forever från 4 november. Skriv upp din karaktär och kom med i gruppen.">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#14110d">
-  <link rel="stylesheet" href="style.css?v=10">
+  <meta property="og:title" content="WoW Forever, spela med oss">
+  <meta property="og:description" content="Skriv upp din karaktär och kom med i gruppen. Play with us!">
+  <meta property="og:image" content="https://emil-leonardsson.github.io/wow-forever/assets/logo-color.webp">
+  <link rel="icon" type="image/webp" href="assets/logo-color.webp">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <header class="hero">
-    <div class="wrap">
-      <p class="eyebrow">Spelargrupp av Emil &amp; Cattis</p>
-      <h1>WoW <span>Forever</span></h1>
-      <p class="lead">Vi startar 4 november och vill spela med folk vi känner. Nybörjare, rostiga veteraner och glesa speltider är välkomna.</p>
+    <div class="topbar wrap">
+      <button type="button" class="btn small ghost" id="fbOpen" data-i18n="feedbackBtn">Feedback</button>
+      <div class="lang" role="group" data-i18n-aria="langLabel" aria-label="Språk">
+        <button type="button" data-lang="sv" aria-pressed="true">SV</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+
+    <div class="wrap hero-body">
+      <p class="eyebrow" data-i18n="eyebrow">Spelargrupp av Emil &amp; Cattis</p>
+      <h1><img class="logo" src="assets/logo-color.webp" alt="World of Warcraft Forever" width="900" height="761"></h1>
+      <p class="lead" data-i18n="lead">Vi startar 4 november och vill spela med folk vi känner. Nybörjare, rostiga veteraner och glesa speltider är välkomna.</p>
       <div class="chips">
         <span class="chip" id="countdown"></span>
-        <span class="chip">Servertyp: Normal</span>
-        <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener">Gå med på Discord</a>
+        <span class="chip" data-i18n="chipServer">Servertyp: Normal</span>
+        <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener" data-i18n="discord">Gå med på Discord</a>
       </div>
       <nav class="jump">
-        <a href="#anmalan" class="btn primary">Skriv upp dig</a>
-        <a href="#roster" class="btn">Vilka är med</a>
+        <a href="#anmalan" class="btn primary" data-i18n="navSignup">Skriv upp dig</a>
+        <a href="#roster" class="btn" data-i18n="navRoster">Vilka är med</a>
+        <a href="qr.html" class="btn" data-i18n="navShare">Dela eller skriv ut</a>
       </nav>
     </div>
   </header>
@@ -31,20 +44,20 @@
     <section id="summary" class="panel" aria-live="polite"></section>
 
     <section id="anmalan" class="panel">
-      <h2 id="formTitle">Skriv upp dig</h2>
-      <p class="muted" id="formIntro">Ingen inloggning. Fyll i dina karaktärer så syns du i listan. Efteråt får du en privat länk för att ändra dem.</p>
+      <h2 id="formTitle" data-i18n="formTitle">Skriv upp dig</h2>
+      <p class="muted" id="formIntro" data-i18n="formIntro">Ingen inloggning. Fyll i dina karaktärer så syns du i listan. Efteråt får du en privat länk för att ändra dem.</p>
 
-      <div id="editBanner" class="notice" hidden></div>
+      <div id="editBanner" class="notice" hidden data-i18n="editBanner"></div>
 
       <form id="regForm" novalidate>
         <div class="field-row">
           <label class="field">
-            <span>Ditt namn eller smeknamn</span>
+            <span data-i18n="displayName">Ditt namn eller smeknamn</span>
             <input id="displayName" maxlength="40" autocomplete="nickname" required>
           </label>
           <label class="field">
-            <span>Hur når vi dig? <em>(valfritt, syns bara för oss)</em></span>
-            <input id="contact" maxlength="120" placeholder="Discord, telefon eller mail">
+            <span><span data-i18n="contact">Hur når vi dig?</span> <em data-i18n="contactNote">(valfritt, syns bara för oss)</em></span>
+            <input id="contact" maxlength="120" data-i18n-ph="contactPh" placeholder="Discord, telefon eller mail">
           </label>
         </div>
 
@@ -52,13 +65,13 @@
 
         <div id="charEditors"></div>
 
-        <button type="button" class="btn" id="addChar">+ Lägg till en till karaktär</button>
+        <button type="button" class="btn" id="addChar" data-i18n="addChar">+ Lägg till en till karaktär</button>
 
         <p class="error" id="formError" role="alert" hidden></p>
 
         <div class="actions">
-          <button type="submit" class="btn primary" id="submitBtn">Skicka in</button>
-          <button type="button" class="btn danger" id="deleteBtn" hidden>Ta bort min registrering</button>
+          <button type="submit" class="btn primary" id="submitBtn" data-i18n="submit">Skicka in</button>
+          <button type="button" class="btn danger" id="deleteBtn" hidden data-i18n="deleteMine">Ta bort min registrering</button>
         </div>
       </form>
 
@@ -66,25 +79,51 @@
     </section>
 
     <section id="roster" class="panel">
-      <h2>Vilka är med</h2>
+      <h2 data-i18n="rosterTitle">Vilka är med</h2>
       <div class="filters">
-        <label>Fraktion
-          <select id="fFaction"><option value="">Alla</option><option>Alliance</option><option>Horde</option></select>
+        <label><span data-i18n="fFaction">Fraktion</span>
+          <select id="fFaction"><option value="" data-i18n="all">Alla</option><option>Alliance</option><option>Horde</option></select>
         </label>
-        <label>Klass <select id="fClass"><option value="">Alla</option></select></label>
-        <label>Yrke <select id="fProf"><option value="">Alla</option></select></label>
-        <label>Servertyp <select id="fRuleset"><option value="">Alla</option></select></label>
+        <label><span data-i18n="fClass">Klass</span> <select id="fClass"><option value="" data-i18n="all">Alla</option></select></label>
+        <label><span data-i18n="fProf">Yrke</span> <select id="fProf"><option value="" data-i18n="all">Alla</option></select></label>
+        <label><span data-i18n="fServer">Servertyp</span> <select id="fRuleset"><option value="" data-i18n="all">Alla</option></select></label>
       </div>
       <div id="cards" class="cards"></div>
-      <p class="muted" id="rosterEmpty" hidden>Ingen här än. Bli först!</p>
+      <p class="muted" id="rosterEmpty" hidden></p>
     </section>
   </main>
 
   <footer class="wrap foot">
-    <p>Inte affilierad med Blizzard Entertainment. Bilder tillhör deras respektive ägare.</p>
+    <img class="foot-logo" src="assets/logo-white.webp" alt="" width="1000" height="563">
+    <p data-i18n="footer">Inte affilierad med Blizzard Entertainment. Bilder tillhör deras respektive ägare.</p>
   </footer>
 
-  <script src="data.js?v=3"></script>
-  <script src="app.js?v=10"></script>
+  <dialog id="fbDialog" class="overlay" aria-labelledby="fbTitle">
+    <form id="fbForm" method="dialog" novalidate>
+      <h2 id="fbTitle" data-i18n="fbTitle">Feedback</h2>
+      <p class="muted" data-i18n="fbIntro">Något som är fel eller saknas? Skriv till oss.</p>
+      <div id="fbFields">
+        <label class="field">
+          <span data-i18n="fbMessage">Ditt meddelande</span>
+          <textarea id="fbMessage" rows="5" maxlength="2000" required></textarea>
+        </label>
+        <label class="field">
+          <span><span data-i18n="fbContact">Vill du ha svar? Lämna kontaktuppgift</span> <em data-i18n="fbContactNote">(valfritt)</em></span>
+          <input id="fbContactInput" maxlength="120">
+        </label>
+        <input class="hp" id="fbWebsite" tabindex="-1" autocomplete="off" aria-hidden="true">
+      </div>
+      <p class="error" id="fbError" role="alert" hidden></p>
+      <div class="notice success" id="fbDone" hidden></div>
+      <div class="actions">
+        <button type="submit" class="btn primary" id="fbSend" data-i18n="fbSend">Skicka</button>
+        <button type="button" class="btn" id="fbCancel" data-i18n="fbCancel">Avbryt</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="i18n.js?v=1"></script>
+  <script src="data.js?v=4"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 window.WF_CONFIG = {
   SUPABASE_URL: 'https://kpaolyovfybxedgaigvp.supabase.co',
   SUPABASE_KEY: 'sb_publishable_9Oup-6p4XC7tYi428XUxTA_KcQbyDpT',
-  DISCORD_URL: '', // Klistra in Discord-invite här när servern finns.
+  DISCORD_URL: 'https://discord.gg/wAfSuvWcv',
   RELEASE_DATE: '2026-11-04',
 };
 
@@ -32,13 +32,6 @@ window.WF_DATA = (() => {
   const unavailableRulesets = ['Hardcore'];
   const roles = ['Tank', 'Healer', 'DPS'];
 
-  const rulesetInfo = {
-    Normal: 'Äventyra och slåss mot monster, PvP när du själv vill.',
-    PvP: 'Nästan alltid i risk att bli attackerad av andra spelare.',
-    Roleplay: 'Strikta namn- och beteenderegler för inlevelse.',
-    Hardcore: 'Permanent död. Döda karaktärer kan flyttas till andra servertyper.',
-  };
-
   // Standardyrken. Kontrollera mot WoW Forever när det släpps.
   const professions = [
     'Alchemy', 'Blacksmithing', 'Enchanting', 'Engineering', 'Herbalism',
@@ -52,6 +45,8 @@ window.WF_DATA = (() => {
     rulesets: { src: 'assets/rulesets.webp', ref: [961, 451] },
     classes: { src: 'assets/race-classes.webp', ref: [878, 647] },
     races: { src: 'assets/races.webp', ref: [1080, 820] },
+    racesF: { src: 'assets/races-female.webp', ref: [340, 480] },
+    gender: { src: 'assets/gender.webp', ref: [190, 100] },
   };
 
   const crops = {
@@ -68,23 +63,31 @@ window.WF_DATA = (() => {
         Rogue: [525, 41], Shaman: [609, 42], Warlock: [700, 43], Warrior: [788, 41],
       }).map(([name, [x, w]]) => [name, { sheet: "classes", x, y: 72, w, h: w }])
     ),
-    // Nyckel: "Faction:Race". Ordningen i bilden är uppifrån och ned.
+    // Nyckel: "Faction:Race:Gender". Ordningen i bilderna är uppifrån och ned.
     race: (() => {
-      const alliance = ['Human', 'Dwarf', 'Night Elf', 'Gnome', 'Skyborne'];
-      const horde = ['Orc', 'Undead', 'Tauren', 'Troll', 'Skyborne'];
-      const tops = [155, 292, 430, 567, 704];
+      const alliance = ["Human", "Dwarf", "Night Elf", "Gnome", "Skyborne"];
+      const horde = ["Orc", "Undead", "Tauren", "Troll", "Skyborne"];
       const out = {};
-      alliance.forEach((r, i) => { out[`Alliance:${r}`] = { sheet: 'races', x: 353, y: tops[i] + 6, w: 104, h: 104 }; });
-      horde.forEach((r, i) => { out[`Horde:${r}`] = { sheet: 'races', x: 617, y: tops[i] + 6, w: 104, h: 104 }; });
+      const maleTops = [155, 292, 430, 567, 704];
+      alliance.forEach((r, i) => { out[`Alliance:${r}:Male`] = { sheet: "races", x: 353, y: maleTops[i] + 6, w: 104, h: 104 }; });
+      horde.forEach((r, i) => { out[`Horde:${r}:Male`] = { sheet: "races", x: 617, y: maleTops[i] + 6, w: 104, h: 104 }; });
+      const femTops = [22, 114, 206, 299, 391];
+      alliance.forEach((r, i) => { out[`Alliance:${r}:Female`] = { sheet: "racesF", x: 53, y: femTops[i], w: 62, h: 62 }; });
+      horde.forEach((r, i) => { out[`Horde:${r}:Female`] = { sheet: "racesF", x: 233, y: femTops[i], w: 62, h: 62 }; });
       return out;
     })(),
+    gender: {
+      Male: { sheet: "gender", x: 31, y: 22, w: 44, h: 44 },
+      Female: { sheet: "gender", x: 105, y: 22, w: 44, h: 44 },
+    },
   };
 
-  const raceKey = (faction, race) => `${faction}:${race}`;
+  const genders = ["Male", "Female"];
+  const raceKey = (faction, race, gender = "Male") => `${faction}:${race}:${gender}`;
   const findRace = (faction, race) => races.find((r) => r.faction === faction && r.race === race);
 
   return {
-    races, classes, rulesets, unavailableRulesets, roles, rulesetInfo, professions, secondaryProfessions,
+    races, classes, genders, rulesets, unavailableRulesets, roles, professions, secondaryProfessions,
     sheets, crops, raceKey, findRace,
   };
 })();
