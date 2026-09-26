@@ -135,7 +135,7 @@
         <div class="picks genders">${D.genders.map((g) => genderButton(i, g, ch)).join('')}</div>
 
         <div class="group-label">${t('race')}</div>
-        ${raceGroup('Alliance')}${raceGroup('Horde')}
+        <div class="race-groups">${raceGroup('Alliance')}${raceGroup('Horde')}</div>
 
         <div class="group-label">${t('cls')}${ch.class ? `: <b class="picked">${ch.class}</b>` : ''} ${ch.race ? '' : `<em>${t('pickRaceFirst')}</em>`}</div>
         <div class="picks classes">${D.classes.map((c) => classButton(i, c, ch)).join('')}</div>
