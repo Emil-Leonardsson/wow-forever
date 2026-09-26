@@ -43,7 +43,6 @@
   let apps = [];
   let members = {}; // publika medlemmar per grupp-id
   let myMembers = []; // ägarens egen grupp
-  let pickerRows = [];
   let g = emptyGroup();
   let formOpen = false;
   let successHtml = '';
@@ -263,19 +262,9 @@
   function membersSection() {
     const rows = myMembers.map((m) => `<li class="mrow"><span><b>${esc(m.player_name)}</b> ${memberChars(m)}</span>
       <button type="button" class="linklike" data-act="remove-member" data-id="${m.id}">${t('memRemove')}</button></li>`).join('');
-    const have = new Set(myMembers.flatMap((m) => m.characters.map((c) => c.id)));
-    pickerRows = A.getRoster().filter((c) => !have.has(c.id));
-    const byPlayer = new Map();
-    pickerRows.forEach((c, i) => { if (!byPlayer.has(c.player_name)) byPlayer.set(c.player_name, []); byPlayer.get(c.player_name).push([c, i]); });
-    const picker = [...byPlayer.entries()].map(([name, list]) => `<div class="pickplayer"><b>${esc(name)}</b>
-      ${list.map(([c, i]) => `<label class="tick"><input type="checkbox" data-pi="${i}"> ${sprite('race', D.raceKey(c.faction, c.race, c.gender), 22, 'inline')} ${esc(c.name)} <em>${esc(c.race)} ${esc(c.class)}</em></label>`).join('')}</div>`).join('');
     return `<div class="reqs"><h3>${t('memTitle')}</h3>
       <p class="muted small">${t('memHint')}</p>
-      ${rows ? `<ul class="mlist">${rows}</ul>` : `<p class="muted">${t('memEmpty')}</p>`}
-      <details class="mpicker"><summary>${t('memAddTitle')}</summary>
-        ${picker || `<p class="muted">${t('memNone')}</p>`}
-        ${picker ? `<button type="button" class="btn small primary" data-act="add-members">${t('memAddBtn')}</button>` : ''}
-      </details></div>`;
+      ${rows ? `<ul class="mlist">${rows}</ul>` : `<p class="muted">${t('memEmpty')}</p>`}</div>`;
   }
 
   function requestsSection() {
@@ -594,13 +583,6 @@
           await loadMine(); await loadGroups(); if (mine) g = { ...g, members_now: mine.members_now };
           renderForm();
           break;
-        case 'add-members': {
-          const picked = [...document.querySelectorAll('#groupForm [data-pi]:checked')].map((el) => pickerRows[Number(el.dataset.pi)]);
-          if (picked.length) await rpc('add_group_member', { p_token: ownerToken, p_character_ids: picked.map((c) => c.id) });
-          await loadMine(); await loadGroups(); if (mine) g = { ...g, members_now: mine.members_now };
-          renderForm();
-          break;
-        }
         case 'withdraw':
           await rpc('withdraw_application', { p_token: btn.dataset.token });
           writeApps(readApps().filter((x) => x !== btn.dataset.token));
