@@ -49,6 +49,13 @@
   let successHtml = '';
   let formError = '';
 
+  // Delas med spelarlistan: vilka grupper en karaktär är medlem i.
+  window.WF_GROUPS = {
+    list: () => groups,
+    forChar: (c) => groups.filter((grp) => (members[grp.id] || []).some((m) => m.player_name === c.player_name
+      && m.characters.some((ch) => ch.name === c.name && ch.race === c.race && ch.class === c.class))),
+  };
+
   // ---------- Hämta ----------
   async function fetchGroups() {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/public_groups?select=*&order=updated_at.desc`, {
@@ -78,6 +85,7 @@
       return;
     }
     renderGroups();
+    A.refreshRosterGroups();
   }
 
   async function loadMine() {

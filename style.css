@@ -291,3 +291,6 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 .pickplayer { margin: 8px 0; }
 .pickplayer .tick { margin: 4px 0 4px 8px; }
 .pickplayer em { font-style: normal; color: var(--muted); font-size: .8rem; }
+
+.cgroups { margin: 2px 0; }
+.tag.grp { border-color: var(--gold-dim); color: var(--gold); }

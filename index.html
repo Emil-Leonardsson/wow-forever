@@ -24,7 +24,7 @@
   <meta name="twitter:description" content="Vi startar 4 november och vill hitta lite folk att spela med.">
   <meta name="twitter:image" content="https://wowforever.party/assets/og-image.jpg">
   <link rel="icon" type="image/webp" href="assets/logo-color.webp">
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
   <header class="hero">
@@ -95,13 +95,17 @@
 
     <section id="roster" class="panel">
       <h2 data-i18n="rosterTitle">Vilka är med</h2>
-      <div class="filters">
+      <div class="filter-bar">
+        <button type="button" class="btn small" id="rFilterToggle" aria-expanded="false" aria-controls="rFilters"><span data-i18n="filterBtn">Filter</span> <span class="badge-inline" id="rFilterCount" hidden></span></button>
+      </div>
+      <div class="filters" id="rFilters" hidden>
         <label><span data-i18n="fFaction">Fraktion</span>
           <select id="fFaction"><option value="" data-i18n="all">Alla</option><option>Alliance</option><option>Horde</option></select>
         </label>
         <label><span data-i18n="fClass">Klass</span> <select id="fClass"><option value="" data-i18n="all">Alla</option></select></label>
         <label><span data-i18n="fProf">Yrke</span> <select id="fProf"><option value="" data-i18n="all">Alla</option></select></label>
         <label><span data-i18n="fServer">Servertyp</span> <select id="fRuleset"><option value="" data-i18n="all">Alla</option></select></label>
+        <label><span data-i18n="fGroup">Grupp</span> <select id="fGroup"><option value="" data-i18n="all">Alla</option></select></label>
       </div>
       <div id="cards" class="cards"></div>
       <p class="muted" id="rosterEmpty" hidden></p>
@@ -202,10 +206,10 @@
     </form>
   </dialog>
 
-  <script src="i18n.js?v=10"></script>
+  <script src="i18n.js?v=11"></script>
   <script src="data.js?v=6"></script>
   <script src="tabs.js?v=1"></script>
-  <script src="app.js?v=18"></script>
-  <script src="groups.js?v=5"></script>
+  <script src="app.js?v=19"></script>
+  <script src="groups.js?v=6"></script>
 </body>
 </html>

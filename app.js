@@ -351,16 +351,31 @@
     renderSummary();
   }
 
+  const groupsFor = (c) => (window.WF_GROUPS ? window.WF_GROUPS.forChar(c) : []);
+
+  function fillGroupFilter() {
+    const sel = $('#fGroup');
+    const keep = sel.value;
+    sel.querySelectorAll('option:not([value=""])').forEach((o) => o.remove());
+    const list = window.WF_GROUPS ? window.WF_GROUPS.list() : [];
+    sel.insertAdjacentHTML('beforeend', `<option value="none">${esc(t('noGroup'))}</option>` + list.map((g) => `<option value="${esc(g.id)}">${esc(g.name)}</option>`).join(''));
+    sel.value = [...sel.options].some((o) => o.value === keep) ? keep : '';
+  }
+
   function renderRoster() {
     const f = {
       faction: $('#fFaction').value, cls: $('#fClass').value,
-      prof: $('#fProf').value, rs: $('#fRuleset').value,
+      prof: $('#fProf').value, rs: $('#fRuleset').value, group: $('#fGroup').value,
     };
+    const active = Object.values(f).filter(Boolean).length;
+    $('#rFilterCount').textContent = String(active);
+    $('#rFilterCount').hidden = !active;
     const rows = roster.filter((c) =>
       (!f.faction || c.faction === f.faction) &&
       (!f.cls || c.class === f.cls) &&
       (!f.prof || c.prof1 === f.prof || c.prof2 === f.prof) &&
-      (!f.rs || c.ruleset === f.rs));
+      (!f.rs || c.ruleset === f.rs) &&
+      (!f.group || (f.group === 'none' ? !groupsFor(c).length : groupsFor(c).some((x) => x.id === f.group))));
 
     $('#rosterEmpty').hidden = rows.length > 0;
     $('#rosterEmpty').textContent = t(roster.length ? 'noMatch' : 'rosterEmpty');
@@ -372,6 +387,7 @@
           <h3>${esc(c.name)}</h3>
           <p class="sub">${sprite('class', c.class, 20, 'inline')} ${esc(c.race)} ${esc(c.class)}${(c.roles || []).length ? ` · ${c.roles.map(esc).join('/')}` : ''}</p>
           <p class="profs">${profs.map((p) => `<span class="tag">${sprite('prof', p, 16, 'inline')} ${esc(p)}</span>`).join('')}${(c.secondary || []).map((p) => `<span class="tag dim">${sprite('prof', p, 16, 'inline')} ${esc(p)}</span>`).join('')}</p>
+          ${groupsFor(c).length ? `<p class="cgroups">${groupsFor(c).map((x) => `<span class="tag grp">${esc(x.name)}</span>`).join('')}</p>` : ''}
           <p class="owner">${t('player')}: ${esc(c.player_name)}${c.ruleset !== 'Normal' ? ` · ${sprite('ruleset', c.ruleset, 16, 'inline')} ${esc(c.ruleset)}` : ''}</p>
         </div>
       </article>`;
@@ -488,6 +504,7 @@
   function rerender() {
     countdown();
     fillFilters();
+    fillGroupFilter();
     renderEditors();
     renderRoster();
     renderSummary();
@@ -501,6 +518,7 @@
   const ready = new Promise((r) => { markReady = r; });
   window.WF_APP = {
     rpc, sprite, esc, ready, getRoster: () => roster,
+    refreshRosterGroups: () => { fillGroupFilter(); renderRoster(); },
     getMine: () => (editToken ? { name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
   };
 
@@ -518,7 +536,12 @@
     renderEditors();
     bindEditors();
     bindFeedback();
-    ['#fFaction', '#fClass', '#fProf', '#fRuleset'].forEach((s) => $(s).addEventListener('change', renderRoster));
+    ['#fFaction', '#fClass', '#fProf', '#fRuleset', '#fGroup'].forEach((s) => $(s).addEventListener('change', renderRoster));
+    $('#rFilterToggle').addEventListener('click', () => {
+      const box = $('#rFilters');
+      box.hidden = !box.hidden;
+      $('#rFilterToggle').setAttribute('aria-expanded', String(!box.hidden));
+    });
     $('#addChar').addEventListener('click', () => { chars.push(emptyChar()); renderEditors(); });
     $('#regForm').addEventListener('submit', onSubmit);
     $('#deleteBtn').addEventListener('click', onDelete);
