@@ -345,3 +345,12 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 .priv .upd { color: var(--muted); font-size: .82rem; }
 .priv-note { margin: 10px 0 0; }
 #privDialog { width: min(640px, calc(100vw - 32px)); }
+
+/* ---------- Laddningsindikator (skelett) ---------- */
+.skel { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(90deg, var(--panel-2) 25%, #3a2f20 40%, var(--panel-2) 60%); background-size: 300% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+.skel-card { min-height: 190px; }
+.skel-roster { min-height: 96px; }
+.skel-fsum { min-height: 240px; }
+@keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

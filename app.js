@@ -349,6 +349,7 @@
     try {
       const mine = await rpc('get_mine', { p_token: token });
       if (!mine) { if (!params.get('edit')) store.del(); return; }
+      await ready;
       editToken = token;
       store.set(token);
       if (params.get('edit')) {
@@ -375,14 +376,19 @@
   // ---------- Lista och sammanfattning ----------
   let roster = [];
 
+  let rosterLoaded = false;
+
   async function refreshRoster() {
     try {
       roster = await fetchRoster();
     } catch (ex) {
       console.error(ex);
+      $('#cards').setAttribute('aria-busy', 'false');
       $('#cards').innerHTML = `<p class="muted">${t('rosterFail')}</p>`;
       return;
     }
+    rosterLoaded = true;
+    await ready;
     renderRoster();
     renderSummary();
   }
@@ -399,6 +405,8 @@
   }
 
   function renderRoster() {
+    if (!rosterLoaded) return;
+    $('#cards').setAttribute('aria-busy', 'false');
     const f = {
       faction: $('#fFaction').value, cls: $('#fClass').value,
       prof: $('#fProf').value, rs: $('#fRuleset').value, group: $('#fGroup').value,
@@ -459,6 +467,8 @@
   }
 
   function renderSummary() {
+    if (!rosterLoaded) return;
+    $('#summary').setAttribute('aria-busy', 'false');
     $('#summary').innerHTML = `<h2>${t('sumTitle')}</h2>
       <div class="factions">${factionSummary('Alliance')}${factionSummary('Horde')}</div>`;
   }
@@ -586,6 +596,8 @@
       b.hidden = false;
     }
     fillFilters();
+    // Data hämtas medan bilderna laddas. Ritningen väntar på båda.
+    const dataP = Promise.all([loadOwn(), refreshRoster(), loadFeedbackBadge()]);
     await loadSheets();
     markReady();
     renderEditors();
@@ -621,7 +633,7 @@
       }
     });
     I.onChange(rerender);
-    await Promise.all([loadOwn(), refreshRoster(), loadFeedbackBadge()]);
+    await dataP;
   }
 
   init();

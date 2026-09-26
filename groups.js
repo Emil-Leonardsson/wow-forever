@@ -37,6 +37,7 @@
   });
 
   let groups = [];
+  let groupsLoaded = false;
   let ownerToken = null;
   let mine = null; // gruppen som ägs av den här webbläsaren
   let requests = [];
@@ -79,9 +80,12 @@
       ms.forEach((m) => { (members[m.group_id] = members[m.group_id] || []).push(m); });
     } catch (ex) {
       console.error(ex);
+      $('#groupCards').setAttribute('aria-busy', 'false');
       $('#groupCards').innerHTML = `<p class="muted">${t('grpLoadFail')}</p>`;
       return;
     }
+    groupsLoaded = true;
+    await A.ready;
     renderGroups();
     A.refreshRosterGroups();
   }
@@ -107,6 +111,7 @@
     } catch (ex) {
       console.error(ex);
     }
+    await A.ready;
     renderApps();
   }
 
@@ -196,6 +201,8 @@
   }
 
   function renderGroups() {
+    if (!groupsLoaded) return;
+    $('#groupCards').setAttribute('aria-busy', 'false');
     updateFilterCount();
     const rows = filteredGroups();
     $('#groupsEmpty').hidden = rows.length > 0;
@@ -627,12 +634,14 @@
   }
 
   async function init() {
+    // Hämtningen startar direkt och ritar först när bilderna är klara.
+    const params = new URLSearchParams(location.search);
+    ownerToken = params.get('group') || ls.get(OWNER_KEY);
+    const dataP = Promise.all([loadGroups(), loadMine(), loadApps()]);
     await A.ready;
     fillFilters();
     bind();
-    const params = new URLSearchParams(location.search);
-    ownerToken = params.get('group') || ls.get(OWNER_KEY);
-    await Promise.all([loadGroups(), loadMine(), loadApps()]);
+    await dataP;
     if (ownerToken && mine) {
       ls.set(OWNER_KEY, ownerToken);
       updateOwnerUi();
