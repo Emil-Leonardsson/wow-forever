@@ -17,8 +17,21 @@
       },
       body: JSON.stringify(args),
     });
-    if (!res.ok) throw new Error(`rpc ${fn}: ${res.status}`);
+    if (!res.ok) {
+      let body = null;
+      try { body = await res.json(); } catch { /* ignoreras */ }
+      const err = new Error(`rpc ${fn}: ${res.status}`);
+      err.code = body && body.code;
+      err.detail = (body && body.message) || '';
+      throw err;
+    }
     return res.json();
+  }
+
+  // Vänligt felmeddelande. Gränsen för antal försök får ett eget svar.
+  function errText(ex, fallbackKey = 'errGeneric') {
+    const limited = ex && ex.code === 'P0001' && /rate limit|too many/.test(ex.detail || '');
+    return I.t(limited ? 'errRate' : fallbackKey);
   }
 
   async function fetchRoster() {
@@ -278,7 +291,7 @@
       await refreshRoster();
     } catch (ex) {
       console.error(ex);
-      showError(t('errGeneric'));
+      showError(errText(ex));
     } finally {
       btn.disabled = false;
     }
@@ -338,7 +351,13 @@
       if (!mine) { if (!params.get('edit')) store.del(); return; }
       editToken = token;
       store.set(token);
-      if (params.get('edit')) window.WF_TABS?.show('skriv-upp-dig', { scroll: false });
+      if (params.get('edit')) {
+        // Redigeringslänken ska inte ligga kvar i adressraden och historiken.
+        params.delete('edit');
+        const qs = params.toString();
+        try { history.replaceState(null, '', location.pathname + (qs ? `?${qs}` : '') + location.hash); } catch { /* ignoreras */ }
+        window.WF_TABS?.show('skriv-upp-dig', { scroll: false });
+      }
       $('#displayName').value = mine.display_name || '';
       $('#contact').value = mine.contact || '';
       chars = (mine.characters || []).map((c) => ({
@@ -489,7 +508,7 @@
         $('#fbCancel').textContent = I.lang === 'sv' ? 'Stäng' : 'Close';
       } catch (ex) {
         console.error(ex);
-        err.textContent = t('fbError');
+        err.textContent = errText(ex, 'fbError');
         err.hidden = false;
       } finally {
         btn.disabled = false;
@@ -553,7 +572,7 @@
   let markReady;
   const ready = new Promise((r) => { markReady = r; });
   window.WF_APP = {
-    rpc, sprite, esc, ready, getRoster: () => roster,
+    rpc, sprite, esc, ready, errText, getRoster: () => roster,
     refreshRosterGroups: () => { fillGroupFilter(); renderRoster(); },
     getMine: () => (editToken ? { token: editToken, name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
   };
@@ -572,6 +591,9 @@
     renderEditors();
     bindEditors();
     bindFeedback();
+    $('#privOpen').addEventListener('click', () => $('#privDialog').showModal());
+    $('#privClose').addEventListener('click', () => $('#privDialog').close());
+    $('#privDialog').addEventListener('click', (e) => { if (e.target === $('#privDialog')) $('#privDialog').close(); });
     $('#shareBtn').addEventListener('click', () => {
       const touch = window.matchMedia('(hover: none)').matches;
       if (touch && navigator.share) {

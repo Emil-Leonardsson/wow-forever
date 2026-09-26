@@ -333,3 +333,8 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
   .topbar .lang button { padding: 5px 9px; font-size: .8rem; }
   .topbar .fb-btn { padding: 6px 8px; }
 }
+
+.priv p { margin: 0 0 10px; font-size: .92rem; }
+.priv b { color: var(--gold); }
+#privDialog { max-height: calc(100vh - 32px); overflow: auto; }
+.footlink.linklike { color: var(--gold); font-size: .85rem; }

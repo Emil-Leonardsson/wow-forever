@@ -393,7 +393,7 @@
       renderForm();
     } catch (ex) {
       console.error(ex);
-      formError = t('errGeneric');
+      formError = A.errText(ex);
       renderForm();
     }
   }
@@ -468,7 +468,7 @@
       await loadApps();
     } catch (ex) {
       console.error(ex);
-      show(t('applyErr'));
+      show(A.errText(ex, 'applyErr'));
       btn.disabled = false;
     }
   }
@@ -509,7 +509,7 @@
       $('#reportError').hidden = true;
     } catch (ex) {
       console.error(ex);
-      $('#reportError').textContent = t('reportErr');
+      $('#reportError').textContent = A.errText(ex, 'reportErr');
       $('#reportError').hidden = false;
     } finally {
       btn.disabled = false;
