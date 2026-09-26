@@ -156,7 +156,16 @@
     </article>`;
   }
 
+  const FILTER_IDS = ['#fgFaction', '#fgRuleset', '#fgLang', '#fgTone', '#fgRole', '#fgClass', '#fgProf'];
+
+  function updateFilterCount() {
+    const n = FILTER_IDS.filter((s) => $(s).value).length;
+    $('#gFilterCount').textContent = String(n);
+    $('#gFilterCount').hidden = !n;
+  }
+
   function renderGroups() {
+    updateFilterCount();
     const rows = filteredGroups();
     $('#groupsEmpty').hidden = rows.length > 0;
     $('#groupsEmpty').textContent = t(groups.length ? 'grpNoMatch' : 'grpEmpty');
@@ -437,6 +446,11 @@
 
   // ---------- Händelser ----------
   function bind() {
+    $('#gFilterToggle').addEventListener('click', () => {
+      const box = $('#gFilters');
+      box.hidden = !box.hidden;
+      $('#gFilterToggle').setAttribute('aria-expanded', String(!box.hidden));
+    });
     ['#fgFaction', '#fgRuleset', '#fgLang', '#fgTone', '#fgRole', '#fgClass', '#fgProf'].forEach((s) => $(s).addEventListener('change', renderGroups));
 
     document.addEventListener('input', (e) => {

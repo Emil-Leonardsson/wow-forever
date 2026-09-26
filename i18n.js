@@ -90,6 +90,7 @@ window.WF_I18N = (() => {
 
       navGroups: "Hitta grupp",
       tabGroups: "Grupper",
+      filterBtn: "Filter",
       tabPlayers: "Spelare",
       navMyGroup: "Din grupp",
       grpTitle: "Grupper som söker medlemmar",
@@ -293,6 +294,7 @@ window.WF_I18N = (() => {
 
       navGroups: "Find a group",
       tabGroups: "Groups",
+      filterBtn: "Filters",
       tabPlayers: "Players",
       navMyGroup: "Your group",
       grpTitle: "Groups looking for members",
