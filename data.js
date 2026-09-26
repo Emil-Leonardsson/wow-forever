@@ -47,6 +47,7 @@ window.WF_DATA = (() => {
     races: { src: 'assets/races.webp', ref: [1080, 820] },
     racesF: { src: 'assets/races-female.webp', ref: [340, 480] },
     gender: { src: 'assets/gender.webp', ref: [190, 100] },
+    profs: { src: 'assets/professions.webp', ref: [504, 320] },
   };
 
   const crops = {
@@ -74,6 +75,18 @@ window.WF_DATA = (() => {
       const femTops = [22, 114, 206, 299, 391];
       alliance.forEach((r, i) => { out[`Alliance:${r}:Female`] = { sheet: "racesF", x: 53, y: femTops[i], w: 62, h: 62 }; });
       horde.forEach((r, i) => { out[`Horde:${r}:Female`] = { sheet: "racesF", x: 233, y: femTops[i], w: 62, h: 62 }; });
+      return out;
+    })(),
+    // Yrkesikoner i raderna: Alchemy, Blacksmithing, Leatherworking, Engineering / Enchanting, Tailoring, Mining, Herbalism / Fishing, First Aid, Cooking, Skinning.
+    prof: (() => {
+      const grid = [
+        ["Alchemy", "Blacksmithing", "Leatherworking", "Engineering"],
+        ["Enchanting", "Tailoring", "Mining", "Herbalism"],
+        ["Fishing", "First Aid", "Cooking", "Skinning"],
+      ];
+      const xs = [88, 173, 259, 344], ys = [38, 127, 216];
+      const out = {};
+      grid.forEach((row, r) => row.forEach((name, c) => { out[name] = { sheet: "profs", x: xs[c], y: ys[r], w: 62, h: 62 }; }));
       return out;
     })(),
     gender: {

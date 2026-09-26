@@ -370,7 +370,7 @@
         <div class="body">
           <h3>${esc(c.name)}</h3>
           <p class="sub">${sprite('class', c.class, 20, 'inline')} ${esc(c.race)} ${esc(c.class)}${(c.roles || []).length ? ` · ${c.roles.map(esc).join('/')}` : ''}</p>
-          <p class="profs">${profs.map((p) => `<span class="tag">${esc(p)}</span>`).join('')}${(c.secondary || []).map((p) => `<span class="tag dim">${esc(p)}</span>`).join('')}</p>
+          <p class="profs">${profs.map((p) => `<span class="tag">${sprite('prof', p, 16, 'inline')} ${esc(p)}</span>`).join('')}${(c.secondary || []).map((p) => `<span class="tag dim">${sprite('prof', p, 16, 'inline')} ${esc(p)}</span>`).join('')}</p>
           <p class="owner">${t('player')}: ${esc(c.player_name)}${c.ruleset !== 'Normal' ? ` · ${sprite('ruleset', c.ruleset, 16, 'inline')} ${esc(c.ruleset)}` : ''}</p>
         </div>
       </article>`;
@@ -390,7 +390,7 @@
       [c.prof1, c.prof2].filter(Boolean).forEach((p) => { byProf[p] = (byProf[p] || 0) + 1; });
       (c.secondary || []).forEach((p) => { bySec[p] = (bySec[p] || 0) + 1; });
     });
-    const profTile = (name, n) => `<div class="pc${n ? '' : ' zero'}"><b>${n}</b><span>${name}</span></div>`;
+    const profTile = (name, n) => `<div class="pc${n ? '' : ' zero'}">${sprite('prof', name, 24)}<b>${n}</b><span>${name}</span></div>`;
     const counts = t('sumCounts', {
       p: players, pw: t(players === 1 ? 'playerOne' : 'playerMany'),
       c: rows.length, cw: t(rows.length === 1 ? 'charOne' : 'charMany'),
@@ -462,6 +462,36 @@
     });
   }
 
+  // ---------- Ägarens feedback-räknare ----------
+  // Ägaren öppnar sidan en gång med ?admin=<nyckel>. Nyckeln sparas i webbläsaren och ger en räknare
+  // på feedback-ikonen. Alla andra får null från databasen och ser ingen räknare.
+  const ADMIN_KEY = 'wf_admin';
+  async function loadFeedbackBadge() {
+    const params = new URLSearchParams(location.search);
+    const fromUrl = params.get('admin');
+    try {
+      if (fromUrl) {
+        localStorage.setItem(ADMIN_KEY, fromUrl);
+        params.delete('admin');
+        const qs = params.toString();
+        history.replaceState(null, '', location.pathname + (qs ? `?${qs}` : '') + location.hash);
+      }
+    } catch { /* ignoreras */ }
+    let secret = null;
+    try { secret = localStorage.getItem(ADMIN_KEY); } catch { /* ignoreras */ }
+    if (!secret) return;
+    try {
+      const n = await rpc('feedback_count', { p_secret: secret });
+      const badge = $('#fbBadge');
+      if (n === null) { try { localStorage.removeItem(ADMIN_KEY); } catch { /* ignoreras */ } return; }
+      badge.textContent = n > 99 ? '99+' : String(n);
+      badge.hidden = n === 0;
+      $('#fbOpen').title = n ? `${n} ${I.lang === 'sv' ? 'nya' : 'new'}` : '';
+    } catch (ex) {
+      console.error(ex);
+    }
+  }
+
   // ---------- Övrigt ----------
   function countdown() {
     const days = Math.ceil((new Date(`${RELEASE_DATE}T00:00:00`) - new Date()) / 86400000);
@@ -508,7 +538,7 @@
       }
     });
     I.onChange(rerender);
-    await Promise.all([loadOwn(), refreshRoster()]);
+    await Promise.all([loadOwn(), refreshRoster(), loadFeedbackBadge()]);
   }
 
   init();

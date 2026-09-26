@@ -159,7 +159,7 @@ legend { color: var(--gold); padding: 0 8px; font-size: 1.05rem; }
 }
 
 .profcount { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 10px 0; }
-.pc { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; background: rgba(0,0,0,.25); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.pc { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(0,0,0,.25); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
 .pc b { color: var(--gold); font-size: 1.05rem; line-height: 1; }
 .pc span { font-size: .75rem; color: #d4c9b1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pc.zero { opacity: .45; }
@@ -194,3 +194,8 @@ dialog.overlay { width: min(520px, calc(100vw - 32px)); padding: 22px 20px; bord
 dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 
 .foot-logo { display: block; width: 150px; height: auto; margin: 0 auto 10px; opacity: .55; }
+
+.fb-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+.fb-icon { flex: none; }
+.badge { position: absolute; top: -8px; right: -8px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--danger); color: #fff; font-size: .72rem; font-weight: 700; line-height: 20px; text-align: center; border: 2px solid var(--bg); }
+.tag .sprite.inline { width: 16px; height: 16px; vertical-align: -3px; }
