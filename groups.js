@@ -261,10 +261,16 @@
 
   function membersSection() {
     const rows = myMembers.map((m) => `<li class="mrow"><span><b>${esc(m.player_name)}</b> ${memberChars(m)}</span>
-      <button type="button" class="linklike" data-act="remove-member" data-id="${m.id}">${t('memRemove')}</button></li>`).join('');
+      ${m.is_owner ? `<span class="tag">${t('memOwner')}</span>` : `<button type="button" class="linklike" data-act="remove-member" data-id="${m.id}">${t('memRemove')}</button>`}</li>`).join('');
     return `<div class="reqs"><h3>${t('memTitle')}</h3>
       <p class="muted small">${t('memHint')}</p>
       ${rows ? `<ul class="mlist">${rows}</ul>` : `<p class="muted">${t('memEmpty')}</p>`}</div>`;
+  }
+
+  function ownerNote() {
+    return A.getMine()
+      ? `<p class="muted small">${t('gOwnerAuto')}</p>`
+      : `<p class="notice">${t('gOwnerNeedReg')} <button type="button" class="btn small" data-tab-btn="skriv-upp-dig">${t('navSignup')}</button></p>`;
   }
 
   function requestsSection() {
@@ -286,6 +292,7 @@
     sec.innerHTML = `
       <h2>${t(editing ? 'gfTitleEdit' : 'gfTitleNew')}${pending ? ` <span class="badge-inline">${pending}</span>` : ''}</h2>
       <p class="muted">${t('gfIntro')}</p>
+      ${editing ? '' : ownerNote()}
       ${editing ? `<p class="notice">${esc(visibility)} <button type="button" class="btn small" data-act="renew">${t('gRenew')}</button></p>` : ''}
       ${editing ? requestsSection() : ''}
       ${editing ? membersSection() : ''}
@@ -373,7 +380,7 @@
         await rpc('save_group', { p_token: ownerToken, p });
         successHtml = t('gSaved');
       } else {
-        const token = await rpc('create_group', { p });
+        const token = await rpc('create_group', { p, p_edit_token: (A.getMine() || {}).token || null });
         ownerToken = token;
         ls.set(OWNER_KEY, token);
         successHtml = `${t('gCreated')}<p>${t('gKeepLink')}</p>
