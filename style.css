@@ -180,8 +180,7 @@ legend { color: var(--gold); padding: 0 8px; font-size: 1.05rem; }
 .race-group.horde { background: linear-gradient(#3d1613, #2a0f0d); border: 1px solid #7d2a22; }
 .race-group.horde h4 { color: #ee8a7d; }
 .picks.races-row { display: grid; grid-template-columns: repeat(5, minmax(0, 76px)); gap: 10px; margin-bottom: 8px; }
-.picks.genders { display: grid; grid-template-columns: repeat(2, minmax(0, 56px)); gap: 10px; margin-bottom: 14px; }
-.pick.gender.male .sprite { filter: sepia(.75) saturate(1.7) brightness(1.05); }
+.picks.genders { display: grid; grid-template-columns: repeat(2, minmax(0, 46px)); gap: 10px; margin-bottom: 14px; }
 @media (max-width: 560px) {
   .picks.races-row { gap: 6px; }
   .race-group { padding: 8px 6px 2px; }

@@ -51,7 +51,7 @@
         'width:100%', `max-width:${px}px`, `aspect-ratio:${c.w}/${c.h}`,
         `background-image:url(${D.sheets[c.sheet].src})`,
         `background-size:${(rw / c.w) * 100}% ${(rh / c.h) * 100}%`,
-        `background-position:${(c.x / (rw - c.w)) * 100}% ${(c.y / (rh - c.h)) * 100}%`,
+        `background-position:${rw > c.w ? (c.x / (rw - c.w)) * 100 : 0}% ${rh > c.h ? (c.y / (rh - c.h)) * 100 : 0}%`,
       ].join(';');
       return `<span class="sprite ${extraClass}" style="${style}" role="img" aria-label="${esc(key)}"></span>`;
     }

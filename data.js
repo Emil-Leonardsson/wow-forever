@@ -46,7 +46,7 @@ window.WF_DATA = (() => {
     classes: { src: 'assets/race-classes.webp', ref: [878, 647] },
     races: { src: 'assets/races.webp', ref: [1080, 820] },
     racesF: { src: 'assets/races-female.webp', ref: [340, 480] },
-    gender: { src: 'assets/gender.webp', ref: [190, 100] },
+    gender: { src: 'assets/gender-icons.webp', ref: [82, 41] },
     profs: { src: 'assets/professions.webp', ref: [504, 320] },
   };
 
@@ -90,8 +90,8 @@ window.WF_DATA = (() => {
       return out;
     })(),
     gender: {
-      Male: { sheet: "gender", x: 31, y: 22, w: 44, h: 44 },
-      Female: { sheet: "gender", x: 105, y: 22, w: 44, h: 44 },
+      Male: { sheet: "gender", x: 0, y: 0, w: 41, h: 41 },
+      Female: { sheet: "gender", x: 41, y: 0, w: 41, h: 41 },
     },
   };
 
