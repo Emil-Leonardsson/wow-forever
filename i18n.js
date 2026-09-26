@@ -17,7 +17,10 @@ window.WF_I18N = (() => {
       discord: 'Gå med på Discord',
       navSignup: 'Skriv upp dig',
       navRoster: 'Vilka är med',
-      navShare: 'Dela eller skriv ut',
+      shareBtn: 'Bjud in vänner',
+      shareText: 'Vill du spela WoW Forever med oss? Titta in här:',
+      discordShort: 'Discord',
+      footPoster: 'Affisch att skriva ut',
       feedbackBtn: 'Feedback',
 
       sumTitle: 'Spelarna just nu',
@@ -234,7 +237,10 @@ window.WF_I18N = (() => {
       discord: 'Join our Discord',
       navSignup: 'Sign up',
       navRoster: "Who's in",
-      navShare: 'Share or print',
+      shareBtn: 'Invite friends',
+      shareText: 'Want to play WoW Forever with us? Have a look:',
+      discordShort: 'Discord',
+      footPoster: 'Printable poster',
       feedbackBtn: 'Feedback',
 
       sumTitle: 'The players right now',

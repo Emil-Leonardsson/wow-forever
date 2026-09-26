@@ -572,6 +572,14 @@
     renderEditors();
     bindEditors();
     bindFeedback();
+    $('#shareBtn').addEventListener('click', () => {
+      const touch = window.matchMedia('(hover: none)').matches;
+      if (touch && navigator.share) {
+        navigator.share({ title: t('docTitle'), text: t('shareText'), url: `${location.origin}${location.pathname}` }).catch(() => {});
+      } else {
+        location.href = 'qr.html';
+      }
+    });
     ['#fFaction', '#fClass', '#fProf', '#fRuleset', '#fGroup'].forEach((s) => $(s).addEventListener('change', renderRoster));
     $('#rFilterToggle').addEventListener('click', () => {
       const box = $('#rFilters');
