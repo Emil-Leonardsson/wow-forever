@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dela WoW Forever-gruppen</title>
   <meta name="robots" content="noindex">
+  <!-- Affischen ska alltid vara ljus och läsbar: stäng av automatiskt mörkt läge (Chrome/Samsung/Dark Reader). -->
+  <meta name="color-scheme" content="only light">
+  <meta name="darkreader-lock">
   <link rel="icon" type="image/webp" href="assets/logo-color.webp">
   <style>
-    :root { --gold: #9a6f0b; }
+    :root { --gold: #9a6f0b; color-scheme: only light; }
     * { box-sizing: border-box; }
     body { margin: 0; font: 16px/1.4 system-ui, "Segoe UI", sans-serif; background: #ece7dc; color: #1a1408; }
     .tools { max-width: 640px; margin: 0 auto; padding: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
@@ -29,7 +32,8 @@
     .poster .eyebrow { letter-spacing: .2em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin: 0; }
     .poster .logo { width: 120mm; max-width: 100%; height: auto; }
     .poster p { margin: 0; font-size: 16pt; max-width: 130mm; }
-    #qr svg { width: 80mm; height: 80mm; display: block; }
+    #qr { background: #fff; padding: 3mm; border-radius: 3mm; line-height: 0; }
+    #qr svg { width: 80mm; height: 80mm; display: block; forced-color-adjust: none; filter: none; }
     .cta { font-size: 22pt !important; font-weight: 700; }
     .url { font-size: 12pt !important; color: #555; word-break: break-all; }
     @media (max-width: 700px) { .poster { padding: 16px; min-height: 0; } .cta { font-size: 18pt !important; } }
@@ -86,7 +90,9 @@
       const qr = qrcode(0, 'M');
       qr.addData(url);
       qr.make();
-      box.innerHTML = qr.createSvgTag({ cellSize: 8, margin: 2, scalable: true });
+      // Hex-färger i stället för namn, så inget läge kan tolka om dem.
+      box.innerHTML = qr.createSvgTag({ cellSize: 8, margin: 2, scalable: true })
+        .replace(/fill="white"/g, "fill=\"#ffffff\"").replace(/fill="black"/g, "fill=\"#000000\"");
     }
     input.addEventListener('input', draw);
     document.getElementById('print').addEventListener('click', () => window.print());
