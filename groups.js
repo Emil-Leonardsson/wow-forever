@@ -41,6 +41,9 @@
   let mine = null; // gruppen som ägs av den här webbläsaren
   let requests = [];
   let apps = [];
+  let members = {}; // publika medlemmar per grupp-id
+  let myMembers = []; // ägarens egen grupp
+  let pickerRows = [];
   let g = emptyGroup();
   let formOpen = false;
   let successHtml = '';
@@ -55,9 +58,20 @@
     return res.json();
   }
 
+  async function fetchMembers() {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/public_group_members?select=*&order=created_at.asc`, {
+      headers: { apikey: SUPABASE_KEY, 'Accept-Profile': 'wowforever' },
+    });
+    if (!res.ok) throw new Error(`members: ${res.status}`);
+    return res.json();
+  }
+
   async function loadGroups() {
     try {
-      groups = await fetchGroups();
+      const [gs, ms] = await Promise.all([fetchGroups(), fetchMembers()]);
+      groups = gs;
+      members = {};
+      ms.forEach((m) => { (members[m.group_id] = members[m.group_id] || []).push(m); });
     } catch (ex) {
       console.error(ex);
       $('#groupCards').innerHTML = `<p class="muted">${t('grpLoadFail')}</p>`;
@@ -67,11 +81,12 @@
   }
 
   async function loadMine() {
-    if (!ownerToken) { mine = null; requests = []; return; }
+    if (!ownerToken) { mine = null; requests = []; myMembers = []; return; }
     try {
       mine = await rpc('get_my_group', { p_token: ownerToken });
       if (!mine) { ownerToken = null; ls.del(OWNER_KEY); requests = []; return; }
       requests = await rpc('group_requests', { p_token: ownerToken });
+      myMembers = await rpc('my_group_members', { p_token: ownerToken });
     } catch (ex) {
       console.error(ex);
     }
@@ -133,6 +148,15 @@
     ].join('');
   }
 
+  const memberChars = (m) => m.characters.map((c) => `<span class="mchar" title="${esc(c.race)} ${esc(c.class)}">${sprite('race', D.raceKey(c.faction, c.race, c.gender), 22, 'inline')} ${esc(c.name)} ${sprite('class', c.class, 16, 'inline')}</span>`).join('');
+
+  function membersHtml(id) {
+    const list = members[id] || [];
+    if (!list.length) return '';
+    const items = list.map((m) => `<li><b>${esc(m.player_name)}</b> ${memberChars(m)}</li>`).join('');
+    return `<details class="gmembers"${list.length <= 4 ? ' open' : ''}><summary>${t('grpMembersList', { n: list.length })}</summary><ul>${items}</ul></details>`;
+  }
+
   function groupCard(grp) {
     const own = mine && mine.id === grp.id;
     const action = own
@@ -151,6 +175,7 @@
       </p>
       ${grp.play_times ? `<p class="gplay">${esc(grp.play_times)}</p>` : ''}
       ${grp.description ? `<p class="gdesc">${esc(grp.description)}</p>` : ''}
+      ${membersHtml(grp.id)}
       <div class="glooking"><b>${t('grpLooking')}</b> ${lookingHtml(grp)}</div>
       <footer>${action}<button type="button" class="linklike" data-act="report" data-id="${grp.id}">${t('grpReport')}</button></footer>
     </article>`;
@@ -211,6 +236,24 @@
     </article>`;
   }
 
+  function membersSection() {
+    const rows = myMembers.map((m) => `<li class="mrow"><span><b>${esc(m.player_name)}</b> ${memberChars(m)}</span>
+      <button type="button" class="linklike" data-act="remove-member" data-id="${m.id}">${t('memRemove')}</button></li>`).join('');
+    const have = new Set(myMembers.flatMap((m) => m.characters.map((c) => `${m.player_name}|${c.name}`)));
+    pickerRows = A.getRoster().filter((c) => !have.has(`${c.player_name}|${c.name}`));
+    const byPlayer = new Map();
+    pickerRows.forEach((c, i) => { if (!byPlayer.has(c.player_name)) byPlayer.set(c.player_name, []); byPlayer.get(c.player_name).push([c, i]); });
+    const picker = [...byPlayer.entries()].map(([name, list]) => `<div class="pickplayer"><b>${esc(name)}</b>
+      ${list.map(([c, i]) => `<label class="tick"><input type="checkbox" data-pi="${i}"> ${sprite('race', D.raceKey(c.faction, c.race, c.gender), 22, 'inline')} ${esc(c.name)} <em>${esc(c.race)} ${esc(c.class)}</em></label>`).join('')}</div>`).join('');
+    return `<div class="reqs"><h3>${t('memTitle')}</h3>
+      <p class="muted small">${t('memHint')}</p>
+      ${rows ? `<ul class="mlist">${rows}</ul>` : `<p class="muted">${t('memEmpty')}</p>`}
+      <details class="mpicker"><summary>${t('memAddTitle')}</summary>
+        ${picker || `<p class="muted">${t('memNone')}</p>`}
+        ${picker ? `<button type="button" class="btn small primary" data-act="add-members">${t('memAddBtn')}</button>` : ''}
+      </details></div>`;
+  }
+
   function renderForm() {
     const sec = $('#groupForm');
     sec.hidden = !formOpen;
@@ -224,6 +267,7 @@
       <p class="muted">${t('gfIntro')}</p>
       ${editing ? `<p class="notice">${esc(visibility)} <button type="button" class="btn small" data-act="renew">${t('gRenew')}</button></p>` : ''}
       ${editing ? `<div class="reqs"><h3>${t('reqTitle')}</h3>${requests.length ? requests.map(requestCard).join('') : `<p class="muted">${t('reqEmpty')}</p>`}</div>` : ''}
+      ${editing ? membersSection() : ''}
       ${successHtml ? `<div class="notice success">${successHtml}</div>` : ''}
       <form id="gForm" novalidate>
         <label class="field"><span>${t('gName')}</span><input data-gf="name" maxlength="40" value="${esc(g.name)}" required></label>
@@ -364,6 +408,7 @@
         ${sprite('race', D.raceKey(c.faction, c.race, c.gender), 30, 'inline')}
         <span><b>${esc(c.name)}</b> ${esc(c.race)} ${esc(c.class)} ${fits(c) ? '' : `<em>${t('applyWrongFaction')}</em>`}</span></label>`).join('')}</div>
       <label class="field"><span>${t('applyMessage')} <em>${t('gDescNote')}</em></span><textarea id="apMessage" rows="3" maxlength="500"></textarea></label>
+      <p class="muted small">${t('applyPublicNote')}</p>
       <p class="error" id="apError" role="alert" hidden></p>
       <div class="actions">
         <button type="submit" class="btn primary" id="apSend">${t('applySend')}</button>
@@ -512,6 +557,23 @@
           await rpc('decide_request', { p_token: ownerToken, p_request: btn.dataset.id, p_accept: btn.dataset.act === 'accept' });
           await loadMine(); await loadGroups(); updateOwnerUi(); renderForm();
           break;
+        case 'remove-member':
+          if (!confirm(t('memConfirmRemove'))) break;
+          await rpc('remove_group_member', { p_token: ownerToken, p_member: btn.dataset.id });
+          await loadMine(); await loadGroups(); if (mine) g = { ...g, members_now: mine.members_now };
+          renderForm();
+          break;
+        case 'add-members': {
+          const picked = [...document.querySelectorAll('#groupForm [data-pi]:checked')].map((el) => pickerRows[Number(el.dataset.pi)]);
+          const byName = new Map();
+          picked.forEach((c) => { if (!byName.has(c.player_name)) byName.set(c.player_name, []); byName.get(c.player_name).push(c); });
+          for (const [name, chars] of byName) {
+            await rpc('add_group_member', { p_token: ownerToken, p_player_name: name, p_characters: chars });
+          }
+          await loadMine(); await loadGroups(); if (mine) g = { ...g, members_now: mine.members_now };
+          renderForm();
+          break;
+        }
         case 'withdraw':
           await rpc('withdraw_application', { p_token: btn.dataset.token });
           writeApps(readApps().filter((x) => x !== btn.dataset.token));

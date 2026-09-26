@@ -279,3 +279,18 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 .hero .jump .btn { padding: 8px 14px; font-size: .9rem; }
 
 .filter-bar { margin: 12px 0 8px; }
+
+/* ---------- Medlemmar ---------- */
+.gmembers { font-size: .9rem; }
+.gmembers summary { cursor: pointer; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+.gmembers ul, .mlist { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 6px; }
+.gmembers li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.mchar { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px 1px 2px; border-radius: 999px; background: #120f0a; border: 1px solid var(--line); font-size: .82rem; }
+.mchar .sprite { border-radius: 50%; }
+.mrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); }
+.mrow > span { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.mpicker { margin-top: 10px; }
+.mpicker summary { cursor: pointer; color: var(--gold); font-weight: 600; }
+.pickplayer { margin: 8px 0; }
+.pickplayer .tick { margin: 4px 0 4px 8px; }
+.pickplayer em { font-style: normal; color: var(--muted); font-size: .8rem; }

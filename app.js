@@ -500,7 +500,7 @@
   let markReady;
   const ready = new Promise((r) => { markReady = r; });
   window.WF_APP = {
-    rpc, sprite, esc, ready,
+    rpc, sprite, esc, ready, getRoster: () => roster,
     getMine: () => (editToken ? { name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
   };
 
