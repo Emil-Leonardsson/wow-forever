@@ -34,9 +34,10 @@
     .url { font-size: 12pt !important; color: #555; word-break: break-all; }
     @media (max-width: 700px) { .poster { padding: 16px; min-height: 0; } .cta { font-size: 18pt !important; } }
     @media print {
-      body { background: #fff; }
-      .tools { display: none; }
-      .poster { margin: 0; width: 100%; min-height: 100vh; }
+      html, body { margin: 0; padding: 0; background: #fff; height: auto; }
+      .tools { display: none !important; }
+      /* Exakt A4 (297 mm) minus en liten marginal, så att inget spiller över på en andra sida. */
+      .poster { margin: 0; width: 210mm; height: 296mm; min-height: 0; max-width: none; padding: 18mm 16mm; overflow: hidden; break-after: avoid; page-break-after: avoid; break-inside: avoid; }
       @page { size: A4; margin: 0; }
     }
   </style>
