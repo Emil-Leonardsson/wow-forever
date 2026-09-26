@@ -307,7 +307,7 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 
 /* ---------- Nedräkning i Blizzards stil ---------- */
 .countdown {
-  max-width: 640px; margin: 14px auto 12px; padding: 22px 16px 18px; text-align: center;
+  max-width: 640px; margin: 14px auto 12px; padding: 20px 16px 16px; text-align: center;
   border-top: 10px solid #c9b08a; border-bottom: 10px solid #c9b08a; border-radius: 2px;
   background:
     radial-gradient(2px 2px at 12% 22%, rgba(140,220,255,.8), transparent 60%),

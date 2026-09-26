@@ -518,6 +518,7 @@
     if (ms <= 0) {
       title.dataset.i18n = 'cdLive';
       title.textContent = t('cdLive');
+      title.hidden = false;
       $('#cdGrid').hidden = true;
       clearInterval(cdTimer);
       cdTimer = null;
