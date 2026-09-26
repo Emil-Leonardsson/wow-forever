@@ -321,6 +321,7 @@
       if (!mine) { if (!params.get('edit')) store.del(); return; }
       editToken = token;
       store.set(token);
+      if (params.get('edit')) window.WF_TABS?.show('skriv-upp-dig', { scroll: false });
       $('#displayName').value = mine.display_name || '';
       $('#contact').value = mine.contact || '';
       chars = (mine.characters || []).map((c) => ({

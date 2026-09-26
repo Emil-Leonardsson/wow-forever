@@ -24,7 +24,7 @@
   <meta name="twitter:description" content="Vi startar 4 november och vill hitta lite folk att spela med.">
   <meta name="twitter:image" content="https://wowforever.party/assets/og-image.jpg">
   <link rel="icon" type="image/webp" href="assets/logo-color.webp">
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
   <header class="hero">
@@ -53,17 +53,23 @@
         <span class="chip faction-alliance" data-i18n="chipFaction">Alliance</span>
       </div>
       <nav class="jump">
-        <a href="#groups" class="btn primary" data-i18n="navGroups">Hitta grupp</a>
-        <a href="#anmalan" class="btn" data-i18n="navSignup">Skriv upp dig</a>
-        <a href="#groupForm" class="btn" id="myGroupBtn" data-act="my-group" hidden><span data-i18n="navMyGroup">Din grupp</span> <span class="badge-inline" id="myGroupBadge" hidden></span></a>
-        <a href="#roster" class="btn" data-i18n="navRoster">Vilka är med</a>
         <a href="qr.html" class="btn" data-i18n="navShare">Dela eller skriv ut</a>
         <a class="btn discord" id="discordBtn" href="#" hidden target="_blank" rel="noopener" data-i18n="discord">Gå med på Discord</a>
       </nav>
     </div>
   </header>
 
+  <nav class="tabs" role="tablist" id="tabs">
+    <div class="wrap tabs-inner">
+      <button type="button" role="tab" class="tab" data-tab-btn="grupper" data-i18n="tabGroups">Grupper</button>
+      <button type="button" role="tab" class="tab" data-tab-btn="spelare" data-i18n="tabPlayers">Spelare</button>
+      <button type="button" role="tab" class="tab" data-tab-btn="skriv-upp-dig" data-i18n="navSignup">Skriv upp dig</button>
+      <button type="button" role="tab" class="tab" data-tab-btn="din-grupp" id="tabMine" hidden><span id="tabMineLabel"></span> <span class="badge-inline" id="myGroupBadge" hidden></span></button>
+    </div>
+  </nav>
+
   <main class="wrap">
+    <div class="tabpanel" data-tab="grupper" role="tabpanel">
     <section id="groups" class="panel">
       <div class="panel-head">
         <h2 data-i18n="grpTitle">Grupper som söker medlemmar</h2>
@@ -84,10 +90,27 @@
     </section>
 
     <section id="myApps" class="panel" hidden></section>
-    <section id="groupForm" class="panel" hidden></section>
+    </div>
 
+    <div class="tabpanel" data-tab="spelare" role="tabpanel">
     <section id="summary" class="panel" aria-live="polite"></section>
 
+    <section id="roster" class="panel">
+      <h2 data-i18n="rosterTitle">Vilka är med</h2>
+      <div class="filters">
+        <label><span data-i18n="fFaction">Fraktion</span>
+          <select id="fFaction"><option value="" data-i18n="all">Alla</option><option>Alliance</option><option>Horde</option></select>
+        </label>
+        <label><span data-i18n="fClass">Klass</span> <select id="fClass"><option value="" data-i18n="all">Alla</option></select></label>
+        <label><span data-i18n="fProf">Yrke</span> <select id="fProf"><option value="" data-i18n="all">Alla</option></select></label>
+        <label><span data-i18n="fServer">Servertyp</span> <select id="fRuleset"><option value="" data-i18n="all">Alla</option></select></label>
+      </div>
+      <div id="cards" class="cards"></div>
+      <p class="muted" id="rosterEmpty" hidden></p>
+    </section>
+    </div>
+
+    <div class="tabpanel" data-tab="skriv-upp-dig" role="tabpanel">
     <section id="anmalan" class="panel">
       <h2 id="formTitle" data-i18n="formTitle">Skriv upp dig</h2>
       <p class="muted" id="formIntro" data-i18n="formIntro">Ingen inloggning. Fyll i dina karaktärer så syns du i listan. Efteråt får du en privat länk för att ändra dem.</p>
@@ -122,20 +145,11 @@
 
       <div id="success" class="notice success" hidden></div>
     </section>
+    </div>
 
-    <section id="roster" class="panel">
-      <h2 data-i18n="rosterTitle">Vilka är med</h2>
-      <div class="filters">
-        <label><span data-i18n="fFaction">Fraktion</span>
-          <select id="fFaction"><option value="" data-i18n="all">Alla</option><option>Alliance</option><option>Horde</option></select>
-        </label>
-        <label><span data-i18n="fClass">Klass</span> <select id="fClass"><option value="" data-i18n="all">Alla</option></select></label>
-        <label><span data-i18n="fProf">Yrke</span> <select id="fProf"><option value="" data-i18n="all">Alla</option></select></label>
-        <label><span data-i18n="fServer">Servertyp</span> <select id="fRuleset"><option value="" data-i18n="all">Alla</option></select></label>
-      </div>
-      <div id="cards" class="cards"></div>
-      <p class="muted" id="rosterEmpty" hidden></p>
-    </section>
+    <div class="tabpanel" data-tab="din-grupp" role="tabpanel">
+    <section id="groupForm" class="panel" hidden></section>
+    </div>
   </main>
 
   <footer class="wrap foot">
@@ -190,9 +204,10 @@
     </form>
   </dialog>
 
-  <script src="i18n.js?v=6"></script>
+  <script src="i18n.js?v=7"></script>
   <script src="data.js?v=6"></script>
-  <script src="app.js?v=16"></script>
-  <script src="groups.js?v=2"></script>
+  <script src="tabs.js?v=1"></script>
+  <script src="app.js?v=17"></script>
+  <script src="groups.js?v=3"></script>
 </body>
 </html>

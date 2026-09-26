@@ -89,6 +89,8 @@ window.WF_I18N = (() => {
       notAtLaunch: 'Finns inte vid launch.',
 
       navGroups: "Hitta grupp",
+      tabGroups: "Grupper",
+      tabPlayers: "Spelare",
       navMyGroup: "Din grupp",
       grpTitle: "Grupper som söker medlemmar",
       grpIntro: "Här hittar du spelgrupper som vill ha fler med. Det är vanliga spelgrupper, inte dungeon- eller raidgrupper. Skapa en egen om du vill samla folk.",
@@ -290,6 +292,8 @@ window.WF_I18N = (() => {
       notAtLaunch: 'Not available at launch.',
 
       navGroups: "Find a group",
+      tabGroups: "Groups",
+      tabPlayers: "Players",
       navMyGroup: "Your group",
       grpTitle: "Groups looking for members",
       grpIntro: "Find play groups that want more members. These are casual play groups, not dungeon or raid groups. Create your own if you want to gather people.",

@@ -269,8 +269,8 @@
   }
 
   function updateOwnerUi() {
-    const btn = $('#myGroupBtn');
-    btn.hidden = !mine;
+    $('#tabMine').hidden = !(mine || formOpen);
+    $('#tabMineLabel').textContent = t(mine ? 'navMyGroup' : 'grpCreate');
     const pending = requests.filter((r) => r.status === 'pending').length;
     const badge = $('#myGroupBadge');
     badge.textContent = String(pending);
@@ -281,7 +281,8 @@
     formOpen = true;
     if (mine) g = fromMine(mine);
     renderForm();
-    $('#groupForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    updateOwnerUi();
+    window.WF_TABS.show('din-grupp');
   }
 
   const manageLink = (token) => `${location.origin}${location.pathname}?group=${token}`;
@@ -339,7 +340,7 @@
     }
     if (!mineReg) {
       body.innerHTML = `<div class="notice">${t('applyNeedReg')}</div>
-        <div class="actions"><a class="btn primary" href="#anmalan" data-act="close-apply">${t('applyGoReg')}</a>
+        <div class="actions"><a class="btn primary" href="#skriv-upp-dig" data-act="close-apply">${t('applyGoReg')}</a>
         <button type="button" class="btn" data-act="close-apply">${t('close')}</button></div>`;
       return;
     }
@@ -490,6 +491,7 @@
           await rpc('delete_group', { p_token: ownerToken });
           ownerToken = null; mine = null; requests = []; ls.del(OWNER_KEY); g = emptyGroup(); formOpen = false; successHtml = '';
           updateOwnerUi(); renderForm(); await loadGroups();
+          window.WF_TABS.show('grupper');
           break;
         case 'accept':
         case 'decline':
@@ -514,8 +516,17 @@
     $('#reportCancel').addEventListener('click', () => $('#reportDialog').close());
     ['#applyDialog', '#reportDialog'].forEach((s) => $(s).addEventListener('click', (e) => { if (e.target === $(s)) $(s).close(); }));
 
+    document.addEventListener('wf:tab', (e) => {
+      if (e.detail === 'din-grupp' && !formOpen) {
+        formOpen = true;
+        if (mine) g = fromMine(mine);
+        renderForm();
+        updateOwnerUi();
+      }
+    });
+
     I.onChange(() => {
-      fillFilters(); renderGroups(); renderApps(); renderForm();
+      fillFilters(); renderGroups(); renderApps(); renderForm(); updateOwnerUi();
       if ($('#applyDialog').open && applyGroup) renderApply();
       $('#reportCancel').textContent = t('fbCancel');
     });
