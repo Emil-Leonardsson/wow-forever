@@ -228,7 +228,7 @@
   }
 
   const payloadChars = () => chars.map((c) => ({
-    name: c.name.trim(), faction: c.faction, race: c.race, class: c.class, gender: c.gender, ruleset: c.ruleset,
+    id: c.id, name: c.name.trim(), faction: c.faction, race: c.race, class: c.class, gender: c.gender, ruleset: c.ruleset,
     prof1: c.prof1, prof2: c.prof2, secondary: c.secondary, roles: c.roles,
   }));
 
@@ -273,6 +273,7 @@
           <div class="actions">${discordButton()}</div>`;
         setEditMode(true);
       }
+      await refreshOwnChars();
       $('#success').scrollIntoView({ behavior: 'smooth', block: 'center' });
       await refreshRoster();
     } catch (ex) {
@@ -310,6 +311,22 @@
     $('#editBanner').hidden = !on;
     $('#formTitle').dataset.i18n = on ? 'formTitleEdit' : 'formTitle';
     $('#submitBtn').dataset.i18n = on ? 'save' : 'submit';
+  }
+
+  // Hämtar egna karaktärer igen så att de nya id:na finns med nästa gång man sparar.
+  async function refreshOwnChars() {
+    try {
+      const mine = await rpc('get_mine', { p_token: editToken });
+      if (!mine) return;
+      chars = (mine.characters || []).map((c) => ({
+        ...emptyChar(), ...c, gender: c.gender || 'Male', prof1: c.prof1 || '', prof2: c.prof2 || '',
+        roles: c.roles || [], secondary: c.secondary || [],
+      }));
+      if (!chars.length) chars = [emptyChar()];
+      renderEditors();
+    } catch (ex) {
+      console.error(ex);
+    }
   }
 
   async function loadOwn() {
@@ -519,7 +536,7 @@
   window.WF_APP = {
     rpc, sprite, esc, ready, getRoster: () => roster,
     refreshRosterGroups: () => { fillGroupFilter(); renderRoster(); },
-    getMine: () => (editToken ? { name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
+    getMine: () => (editToken ? { token: editToken, name: $('#displayName').value.trim(), contact: $('#contact').value.trim(), chars: chars.map((c) => ({ ...c })) } : null),
   };
 
   async function init() {

@@ -294,3 +294,14 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 
 .cgroups { margin: 2px 0; }
 .tag.grp { border-color: var(--gold-dim); color: var(--gold); }
+
+/* Ihopfällda behandlade ansökningar */
+.req-history { margin-top: 10px; }
+.req-history > summary { cursor: pointer; color: var(--muted); font-weight: 600; padding: 6px 0; }
+.reqrow { border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); margin: 6px 0; }
+.reqrow > summary { cursor: pointer; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; list-style: none; }
+.reqrow > summary::-webkit-details-marker { display: none; }
+.reqrow > summary::before { content: '\25B8'; color: var(--muted); }
+.reqrow[open] > summary::before { content: '\25BE'; }
+.reqrow.declined { opacity: .65; }
+.reqbody { padding: 0 10px 10px; }

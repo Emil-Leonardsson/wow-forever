@@ -52,8 +52,7 @@
   // Delas med spelarlistan: vilka grupper en karaktär är medlem i.
   window.WF_GROUPS = {
     list: () => groups,
-    forChar: (c) => groups.filter((grp) => (members[grp.id] || []).some((m) => m.player_name === c.player_name
-      && m.characters.some((ch) => ch.name === c.name && ch.race === c.race && ch.class === c.class))),
+    forChar: (c) => groups.filter((grp) => (members[grp.id] || []).some((m) => m.characters.some((ch) => ch.id === c.id))),
   };
 
   // ---------- Hämta ----------
@@ -227,10 +226,27 @@
       <button type="button" class="pick rs${on ? ' on' : ''}" data-gs="ruleset" data-v="${rs}" ${off ? 'disabled' : ''} aria-label="${rs}" aria-pressed="${on}">${sprite('ruleset', rs, 200, 'fluid')}</button></div>`;
   }
 
-  function requestCard(r) {
-    const chars = r.characters.map((c) => `<li>${sprite('race', D.raceKey(c.faction, c.race, c.gender), 34, 'inline')}
+  const reqChars = (r) => r.characters.map((c) => `<li>${sprite('race', D.raceKey(c.faction, c.race, c.gender), 34, 'inline')}
       <span><b>${esc(c.name)}</b> ${esc(c.race)} ${esc(c.class)}${(c.roles || []).length ? ` · ${c.roles.map(esc).join('/')}` : ''}${c.prof1 ? ` · ${esc(c.prof1)}` : ''}${c.prof2 ? `, ${esc(c.prof2)}` : ''}</span></li>`).join('');
-    const label = t(r.status === 'pending' ? 'reqPending' : r.status === 'accepted' ? 'reqAccepted' : 'reqDeclined');
+
+  const reqLabel = (r) => t(r.status === 'pending' ? 'reqPending' : r.status === 'accepted' ? 'reqAccepted' : 'reqDeclined');
+
+  // Behandlade ansökningar visas som en rad som fälls ut, så listan inte växer.
+  function requestRow(r) {
+    const names = r.characters.map((c) => esc(c.name)).join(', ');
+    const flip = r.status === 'accepted'
+      ? `<button type="button" class="btn small danger" data-act="decline" data-id="${r.id}">${t('reqDecline')}</button>`
+      : `<button type="button" class="btn small primary" data-act="accept" data-id="${r.id}">${t('reqAccept')}</button>`;
+    return `<details class="reqrow ${r.status}"><summary><b>${esc(r.applicant_name)}</b> <span class="tag">${reqLabel(r)}</span> <span class="muted small">${names}</span></summary>
+      <div class="reqbody"><ul class="reqchars">${reqChars(r)}</ul>
+      ${r.message ? `<p class="gdesc">${esc(r.message)}</p>` : ''}
+      ${r.applicant_contact ? `<p class="reqcontact"><b>${t('reqContact')}</b> ${esc(r.applicant_contact)}</p>` : ''}
+      <div class="actions">${flip}</div></div></details>`;
+  }
+
+  function requestCard(r) {
+    const chars = reqChars(r);
+    const label = reqLabel(r);
     const buttons = r.status === 'pending'
       ? `<button type="button" class="btn small primary" data-act="accept" data-id="${r.id}">${t('reqAccept')}</button>
          <button type="button" class="btn small danger" data-act="decline" data-id="${r.id}">${t('reqDecline')}</button>`
@@ -247,8 +263,8 @@
   function membersSection() {
     const rows = myMembers.map((m) => `<li class="mrow"><span><b>${esc(m.player_name)}</b> ${memberChars(m)}</span>
       <button type="button" class="linklike" data-act="remove-member" data-id="${m.id}">${t('memRemove')}</button></li>`).join('');
-    const have = new Set(myMembers.flatMap((m) => m.characters.map((c) => `${m.player_name}|${c.name}`)));
-    pickerRows = A.getRoster().filter((c) => !have.has(`${c.player_name}|${c.name}`));
+    const have = new Set(myMembers.flatMap((m) => m.characters.map((c) => c.id)));
+    pickerRows = A.getRoster().filter((c) => !have.has(c.id));
     const byPlayer = new Map();
     pickerRows.forEach((c, i) => { if (!byPlayer.has(c.player_name)) byPlayer.set(c.player_name, []); byPlayer.get(c.player_name).push([c, i]); });
     const picker = [...byPlayer.entries()].map(([name, list]) => `<div class="pickplayer"><b>${esc(name)}</b>
@@ -260,6 +276,14 @@
         ${picker || `<p class="muted">${t('memNone')}</p>`}
         ${picker ? `<button type="button" class="btn small primary" data-act="add-members">${t('memAddBtn')}</button>` : ''}
       </details></div>`;
+  }
+
+  function requestsSection() {
+    const pending = requests.filter((r) => r.status === 'pending');
+    const done = requests.filter((r) => r.status !== 'pending');
+    const pendingHtml = pending.length ? pending.map(requestCard).join('') : `<p class="muted">${t(requests.length ? 'reqNoPending' : 'reqEmpty')}</p>`;
+    const doneHtml = done.length ? `<details class="req-history"><summary>${t('reqHistory', { n: done.length })}</summary>${done.map(requestRow).join('')}</details>` : '';
+    return `<div class="reqs"><h3>${t('reqTitle')}</h3>${pendingHtml}${doneHtml}</div>`;
   }
 
   function renderForm() {
@@ -274,7 +298,7 @@
       <h2>${t(editing ? 'gfTitleEdit' : 'gfTitleNew')}${pending ? ` <span class="badge-inline">${pending}</span>` : ''}</h2>
       <p class="muted">${t('gfIntro')}</p>
       ${editing ? `<p class="notice">${esc(visibility)} <button type="button" class="btn small" data-act="renew">${t('gRenew')}</button></p>` : ''}
-      ${editing ? `<div class="reqs"><h3>${t('reqTitle')}</h3>${requests.length ? requests.map(requestCard).join('') : `<p class="muted">${t('reqEmpty')}</p>`}</div>` : ''}
+      ${editing ? requestsSection() : ''}
       ${editing ? membersSection() : ''}
       ${successHtml ? `<div class="notice success">${successHtml}</div>` : ''}
       <form id="gForm" novalidate>
@@ -405,10 +429,9 @@
         <button type="button" class="btn" data-act="close-apply">${t('close')}</button></div>`;
       return;
     }
-    const chars = mineReg.chars.filter((c) => c.name && c.race && c.class);
+    const chars = mineReg.chars.filter((c) => c.id && c.name && c.race && c.class);
     const fits = (c) => applyGroup.faction === 'Any' || c.faction === applyGroup.faction;
     body.innerHTML = `
-      <label class="field"><span>${t('applyName')}</span><input id="apName" maxlength="40" value="${esc(mineReg.name)}"></label>
       <label class="field"><span>${t('applyContact')} <em>${t('applyContactNote')}</em></span><input id="apContact" maxlength="200" value="${esc(mineReg.contact)}"></label>
       <div class="group-label">${t('applyChars')}</div>
       <div class="apchars">${chars.map((c, i) => `<label class="tick apchar ${fits(c) ? '' : 'off'}">
@@ -429,7 +452,7 @@
     if (!applyGroup || applyDone) return;
     const err = $('#apError');
     const mineReg = A.getMine();
-    const chars = mineReg.chars.filter((c) => c.name && c.race && c.class);
+    const chars = mineReg.chars.filter((c) => c.id && c.name && c.race && c.class);
     const picked = [...document.querySelectorAll('#applyBody [data-ci]:checked')].map((el) => chars[Number(el.dataset.ci)]);
     const contact = $('#apContact').value.trim();
     const show = (m) => { err.textContent = m; err.hidden = false; };
@@ -439,8 +462,8 @@
     btn.disabled = true;
     try {
       const token = await rpc('apply_to_group', {
-        p_group: applyGroup.id, p_name: $('#apName').value.trim() || mineReg.name, p_contact: contact,
-        p_characters: picked.slice(0, 5).map((c) => ({ name: c.name, faction: c.faction, race: c.race, class: c.class, gender: c.gender, roles: c.roles, prof1: c.prof1, prof2: c.prof2 })),
+        p_group: applyGroup.id, p_edit_token: mineReg.token, p_contact: contact,
+        p_character_ids: picked.slice(0, 5).map((c) => c.id),
         p_message: $('#apMessage').value.trim(),
       });
       writeApps([...readApps(), token]);
@@ -573,11 +596,7 @@
           break;
         case 'add-members': {
           const picked = [...document.querySelectorAll('#groupForm [data-pi]:checked')].map((el) => pickerRows[Number(el.dataset.pi)]);
-          const byName = new Map();
-          picked.forEach((c) => { if (!byName.has(c.player_name)) byName.set(c.player_name, []); byName.get(c.player_name).push(c); });
-          for (const [name, chars] of byName) {
-            await rpc('add_group_member', { p_token: ownerToken, p_player_name: name, p_characters: chars });
-          }
+          if (picked.length) await rpc('add_group_member', { p_token: ownerToken, p_character_ids: picked.map((c) => c.id) });
           await loadMine(); await loadGroups(); if (mine) g = { ...g, members_now: mine.members_now };
           renderForm();
           break;
