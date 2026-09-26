@@ -300,3 +300,7 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 .reqrow[open] > summary::before { content: '\25BE'; }
 .reqrow.declined { opacity: .65; }
 .reqbody { padding: 0 10px 10px; }
+
+/* Tryck-för-att-visa */
+.tip { position: fixed; z-index: 100; max-width: min(260px, calc(100vw - 16px)); padding: 8px 12px; border-radius: 8px; background: #120f0a; color: var(--text); border: 1px solid var(--gold); box-shadow: 0 6px 20px rgba(0,0,0,.6); font-size: .85rem; line-height: 1.35; pointer-events: none; }
+@media (hover: none) { .opt.off .pick:disabled { pointer-events: none; } }

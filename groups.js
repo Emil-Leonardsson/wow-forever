@@ -221,7 +221,7 @@
     const off = D.unavailableRulesets.includes(rs);
     const on = g.ruleset === rs && !off;
     const title = off ? `${t('rs_' + rs)} ${t('notAtLaunch')}` : t('rs_' + rs);
-    return `<div class="opt${off ? ' off' : ''}" title="${esc(title)}"><span class="lbl">${rs}</span>
+    return `<div class="opt${off ? ' off' : ''}" title="${esc(title)}" data-tip="${esc(title)}"><span class="lbl">${rs}</span>
       <button type="button" class="pick rs${on ? ' on' : ''}" data-gs="ruleset" data-v="${rs}" ${off ? 'disabled' : ''} aria-label="${rs}" aria-pressed="${on}">${sprite('ruleset', rs, 200, 'fluid')}</button></div>`;
   }
 
