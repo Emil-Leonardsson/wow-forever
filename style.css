@@ -307,8 +307,8 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
 
 /* ---------- Nedräkning i Blizzards stil ---------- */
 .countdown {
-  max-width: 640px; margin: 14px auto 12px; padding: 20px 16px 16px; text-align: center;
-  border-top: 10px solid #c9b08a; border-bottom: 10px solid #c9b08a; border-radius: 2px;
+  max-width: 420px; margin: 10px auto 10px; padding: 12px 12px 10px; text-align: center;
+  border-top: 6px solid #c9b08a; border-bottom: 6px solid #c9b08a; border-radius: 2px;
   background:
     radial-gradient(2px 2px at 12% 22%, rgba(140,220,255,.8), transparent 60%),
     radial-gradient(2px 2px at 78% 30%, rgba(140,220,255,.7), transparent 60%),
@@ -319,9 +319,9 @@ dialog.overlay::backdrop { background: rgba(0,0,0,.65); }
     linear-gradient(#0b6d8e, #0a4f6d);
   box-shadow: 0 10px 30px rgba(0,0,0,.35);
 }
-.cd-title { margin: 0 0 12px; font: 400 clamp(1.15rem, 4.6vw, 1.6rem)/1.25 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; color: #f4ecd8; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
-.cd-grid { display: flex; align-items: flex-start; justify-content: center; gap: clamp(6px, 3vw, 22px); }
-.cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.2ch; }
-.cd-unit b { font: 400 clamp(2.4rem, 11vw, 3.6rem)/1 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35); }
-.cd-unit span { margin-top: 6px; font-size: clamp(.7rem, 2.6vw, .95rem); letter-spacing: .04em; text-transform: uppercase; color: #eadfc6; }
-.cd-grid i { font: 400 clamp(1.6rem, 7vw, 2.4rem)/1.5 Georgia, serif; font-style: normal; color: #f4ecd8; opacity: .85; }
+.cd-title { margin: 0 0 12px; font: 400 clamp(.95rem, 3.8vw, 1.15rem)/1.25 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; color: #f4ecd8; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.cd-grid { display: flex; align-items: flex-start; justify-content: center; gap: clamp(4px, 2vw, 14px); }
+.cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 2.6ch; }
+.cd-unit b { font: 400 clamp(1.7rem, 7.5vw, 2.3rem)/1 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.cd-unit span { margin-top: 4px; font-size: clamp(.6rem, 2.2vw, .75rem); letter-spacing: .04em; text-transform: uppercase; color: #eadfc6; }
+.cd-grid i { font: 400 clamp(1.1rem, 4.6vw, 1.5rem)/1.5 Georgia, serif; font-style: normal; color: #f4ecd8; opacity: .85; }
