@@ -6,3 +6,7 @@ Enkel gruppsida där man skriver upp sina WoW Forever-karaktärer (race, klass, 
 - Data ligger i Supabase, schemat `wowforever` i [shared-db](https://github.com/Emil-Leonardsson/shared-db).
 - `data.js` innehåller race/klass-matris, servertyper, yrken och Discord-länken (`DISCORD_URL`).
 - `qr.html` genererar en utskrivbar affisch med QR-kod.
+
+## Typsnitt
+
+Rubrikerna använder ett Warcraft-liknande fan-typsnitt (`assets/fonts/warcraft-sv.otf`). Originalet saknade å, ä och ö, så de är tillagda genom att sätta ihop bokstäverna a, o, A och O med fontens egna punkter och ring. Typsnittet är inte skapat av oss, kontrollera licensen innan sidan används kommersiellt.

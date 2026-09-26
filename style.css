@@ -18,7 +18,7 @@
 html { scroll-behavior: smooth; }
 @font-face {
   font-family: "Warcraft";
-  src: url("assets/fonts/warcraft.ttf") format("truetype");
+  src: url("assets/fonts/warcraft-sv.otf") format("opentype");
   font-display: swap;
 }
 
