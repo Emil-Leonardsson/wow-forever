@@ -86,8 +86,8 @@ legend { color: var(--gold); padding: 0 8px; font-size: 1.05rem; }
 .pick.on { border-color: var(--gold); background: rgba(240,200,90,.12); }
 .pick:disabled { opacity: .28; cursor: not-allowed; }
 .picks.classes, .picks.rulesets { display: grid; gap: 6px; }
-.picks.classes { grid-template-columns: repeat(9, minmax(0, 1fr)); }
-.picks.rulesets { grid-template-columns: repeat(4, minmax(0, 120px)); gap: 10px; }
+.picks.classes { grid-template-columns: repeat(9, minmax(0, 52px)); }
+.picks.rulesets { grid-template-columns: repeat(4, minmax(0, 68px)); gap: 10px; }
 .opt { display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; min-width: 0; }
 .opt .lbl { text-align: center; font-size: .78rem; line-height: 1.15; color: #d4c9b1; }
 .opt .lbl small { display: block; font-size: .62rem; color: var(--muted); }
@@ -179,8 +179,8 @@ legend { color: var(--gold); padding: 0 8px; font-size: 1.05rem; }
 .race-group.alliance h4 { color: #8fb1f2; }
 .race-group.horde { background: linear-gradient(#3d1613, #2a0f0d); border: 1px solid #7d2a22; }
 .race-group.horde h4 { color: #ee8a7d; }
-.picks.races-row { display: grid; grid-template-columns: repeat(5, minmax(0, 120px)); gap: 10px; margin-bottom: 8px; }
-.picks.genders { display: grid; grid-template-columns: repeat(2, minmax(0, 88px)); gap: 10px; margin-bottom: 14px; }
+.picks.races-row { display: grid; grid-template-columns: repeat(5, minmax(0, 76px)); gap: 10px; margin-bottom: 8px; }
+.picks.genders { display: grid; grid-template-columns: repeat(2, minmax(0, 56px)); gap: 10px; margin-bottom: 14px; }
 .pick.gender.male .sprite { filter: sepia(.75) saturate(1.7) brightness(1.05); }
 @media (max-width: 560px) {
   .picks.races-row { gap: 6px; }
