@@ -198,6 +198,7 @@
     const n = FILTER_IDS.filter((s) => $(s).value).length;
     $('#gFilterCount').textContent = String(n);
     $('#gFilterCount').hidden = !n;
+    $('#gFilterClear').hidden = !n;
   }
 
   function renderGroups() {
@@ -527,6 +528,10 @@
 
   // ---------- Händelser ----------
   function bind() {
+    $('#gFilterClear').addEventListener('click', () => {
+      FILTER_IDS.forEach((s) => { $(s).value = ''; });
+      renderGroups();
+    });
     $('#gFilterToggle').addEventListener('click', () => {
       const box = $('#gFilters');
       box.hidden = !box.hidden;

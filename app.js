@@ -414,6 +414,7 @@
     const active = Object.values(f).filter(Boolean).length;
     $('#rFilterCount').textContent = String(active);
     $('#rFilterCount').hidden = !active;
+    $('#rFilterClear').hidden = !active;
     const rows = roster.filter((c) =>
       (!f.faction || c.faction === f.faction) &&
       (!f.cls || c.class === f.cls) &&
@@ -616,6 +617,10 @@
       }
     });
     ['#fFaction', '#fClass', '#fProf', '#fRuleset', '#fGroup'].forEach((s) => $(s).addEventListener('change', renderRoster));
+    $('#rFilterClear').addEventListener('click', () => {
+      ['#fFaction', '#fClass', '#fProf', '#fRuleset', '#fGroup'].forEach((s) => { $(s).value = ''; });
+      renderRoster();
+    });
     $('#rFilterToggle').addEventListener('click', () => {
       const box = $('#rFilters');
       box.hidden = !box.hidden;
